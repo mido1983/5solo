@@ -1,0 +1,165 @@
+﻿{
+  "brand": {
+    "tagline": "Five disciplines. One outcome."
+  },
+  "seo": {
+    "title": "5SOLO · Five disciplines. One outcome.",
+    "description": "5SOLO is a five-in-one studio covering development, design, SEO, media and care to launch your next product fast."
+  },
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "testimonials": "Testimonials",
+    "contact": "Contact"
+  },
+  "hero": {
+    "badge": "Full-stack studio",
+    "title": "Five experts.<br/>One result.",
+    "subtitle": "Development, design, SEO, media and care teams working as one to ship revenue-ready MVPs in record time.",
+    "cta": "Book a consultation",
+    "secondaryCta": "Explore services",
+    "cards": {
+      "1": {
+        "title": "Launch time",
+        "value": "10 days"
+      },
+      "2": {
+        "title": "Team",
+        "value": "5 leads"
+      },
+      "3": {
+        "title": "Deliverables",
+        "value": "End-to-end"
+      },
+      "4": {
+        "title": "Focus",
+        "value": "Impact"
+      }
+    }
+  },
+  "about": {
+    "label": "Who we are",
+    "title": "An orchestra of five soloists",
+    "text": "5SOLO unites development, design, SEO, media and client care. We build lean MVPs, orchestrate growth-ready sites and stay with you after launch to optimise every touchpoint."
+  },
+  "services": {
+    "label": "Services",
+    "title": "One studio. Five expert tracks.",
+    "subtitle": "Each track is led by a senior specialist and reinforced by the rest of the collective so you never lose momentum.",
+    "items": {
+      "dev": {
+        "title": "Solo Dev",
+        "description": "Product-minded engineering for blazing-fast Next.js builds, integrations and automation."
+      },
+      "design": {
+        "title": "Solo Design",
+        "description": "Brand, UI and UX crafted together to convert – responsive, accessible and on brief."
+      },
+      "seo": {
+        "title": "Solo SEO",
+        "description": "Technical audits, keyword journeys and content systems aligned with your funnel."
+      },
+      "media": {
+        "title": "Solo Media",
+        "description": "Launch-ready creative, motion and social assets powered by unified brand guidelines."
+      },
+      "care": {
+        "title": "Solo Care",
+        "description": "Post-launch optimisation, analytics and retention programmes with clear SLAs."
+      }
+    }
+  },
+  "portfolio": {
+    "label": "Case studies",
+    "title": "A sample of our launch sprints",
+    "subtitle": "We partner with SaaS, eCommerce and content teams that need a reliable production partner.",
+    "cta": "See project scope",
+    "items": {
+      "case1": {
+        "title": "GrowthOS",
+        "description": "Productised onboarding platform redesigned and shipped in 12 days.",
+        "alt": "GrowthOS dashboard preview"
+      },
+      "case2": {
+        "title": "Helix Labs",
+        "description": "Investor-ready biotech story site with interactive data visuals.",
+        "alt": "Helix Labs website preview"
+      },
+      "case3": {
+        "title": "Nimbus CX",
+        "description": "Customer care knowledge base with multilingual support workflows.",
+        "alt": "Nimbus CX knowledge base preview"
+      },
+      "case4": {
+        "title": "Atlas Media",
+        "description": "Campaign landing system producing 6 bespoke variations per week.",
+        "alt": "Atlas Media landing page preview"
+      }
+    }
+  },
+  "testimonials": {
+    "label": "Testimonials",
+    "title": "Teams that ship with 5SOLO",
+    "subtitle": "Early-stage founders, CMOs and product leads choose us when they need senior execution without the overhead.",
+    "items": {
+      "client1": {
+        "quote": "We signed our first enterprise client two weeks after launch. The stack, copy and tracking were ready from day one.",
+        "name": "Lena H.",
+        "role": "Founder, GrowthOS"
+      },
+      "client2": {
+        "quote": "Design never outpaced development. Every sprint delivered a usable increment we could demo to stakeholders.",
+        "name": "Ilya T.",
+        "role": "Head of Product, Helix Labs"
+      },
+      "client3": {
+        "quote": "They handled rollout, localisation and SEO migrations as one motion. Our support KPIs improved within the first month.",
+        "name": "Marina P.",
+        "role": "CX Director, Nimbus"
+      }
+    }
+  },
+  "cta": {
+    "label": "Offer",
+    "title": "MVP-ready website in 10 days",
+    "subtitle": "Kick-off within 48 hours. Fixed scope, transparent pricing, senior team on every task.",
+    "button": "Start the project"
+  },
+  "contact": {
+    "label": "Contact",
+    "title": "Tell us about your launch",
+    "subtitle": "Share goals, timeline and the channels you need. We respond within one business day.",
+    "name": "Your name",
+    "email": "Work email",
+    "message": "Project details",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "sidebar": {
+      "title": "Prefer a direct line?",
+      "description": "Write or call us and we will set up a discovery call with the lead specialists.",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone"
+    }
+  },
+  "form": {
+    "success": "Thanks! We will get back within one working day.",
+    "error": "Something went wrong. Please try again later.",
+    "validation": {
+      "required": "Please fill in all required fields."
+    }
+  },
+  "footer": {
+    "tagline": "Independent studio shipping end-to-end launches.",
+    "contact": {
+      "email": "hello@5solo.studio",
+      "phoneDisplay": "+1 646 000 5050",
+      "phoneLink": "+16460005050"
+    },
+    "rights": "All rights reserved.",
+    "links": {
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  }
+}
