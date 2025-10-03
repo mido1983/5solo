@@ -38,6 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} bg-brand-base`} suppressHydrationWarning>
+      <head>
+        <meta charSet="utf-8" />
+      </head>
       <body className="bg-brand-base text-brand-foreground antialiased">
         {children}
       </body>
