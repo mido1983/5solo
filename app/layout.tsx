@@ -37,8 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const dir = getDir(locale);
 
   return (
-    <html lang={locale} dir={dir} className={`${inter.variable} bg-graphite-900`} suppressHydrationWarning>
-      <body className="bg-graphite-900 text-body antialiased">
+    <html lang={locale} dir={dir} className={`${inter.variable} bg-brand-base`} suppressHydrationWarning>
+      <body className="bg-brand-base text-brand-foreground antialiased">
         {children}
       </body>
     </html>

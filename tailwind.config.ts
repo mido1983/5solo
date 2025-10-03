@@ -10,23 +10,44 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        graphite: {
-          900: "#0d1017",
-          800: "#141821",
-          700: "#1c2230",
+        brand: {
+          base: "#050a1a",
+          surface: "#0f1a30",
+          overlay: "#18254a",
+          line: "#233159",
+          muted: "#a2adc6",
+          foreground: "#f5f6ff",
         },
         accent: {
-          gold: "#f5b400",
-          blue: "#3ab4f2",
+          primary: "#3dd6ff",
+          secondary: "#ff9f43",
+          success: "#34d399",
+          danger: "#f87171",
         },
-        surface: "#10141f",
-        body: "#f5f7fa",
+        paletteA: {
+          base: "#050a1a",
+          surface: "#0f1a30",
+          overlay: "#18254a",
+          line: "#233159",
+          foreground: "#f5f6ff",
+          accentPrimary: "#3dd6ff",
+          accentSecondary: "#ff9f43",
+        },
+        paletteB: {
+          base: "#1b140d",
+          surface: "#2a2017",
+          overlay: "#3b2c1f",
+          line: "#453629",
+          foreground: "#f6f1ea",
+          accentPrimary: "#1ea7ff",
+          accentSecondary: "#22c55e",
+        },
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
       },
       boxShadow: {
-        glow: "0 0 20px rgba(58, 180, 242, 0.35)",
+        glow: "0 0 30px rgba(61, 214, 255, 0.35)",
       },
       container: {
         center: true,
@@ -44,10 +65,12 @@ const config: Config = {
       animation: {
         fadeUp: "fadeUp 0.8s ease-in-out both",
       },
+      ringColor: {
+        accent: "#3dd6ff",
+      },
     },
   },
   plugins: [tailwindcssRtl],
 };
 
 export default config;
-

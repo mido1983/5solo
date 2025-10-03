@@ -1,5 +1,9 @@
 ﻿import { NextResponse } from "next/server";
 
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+
+export const runtime = "edge";
+
 const EMAIL_REGEX = /.+@.+\..+/i;
 
 export async function POST(request: Request) {
@@ -7,6 +11,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const name = String(body?.name ?? "").trim();
     const email = String(body?.email ?? "").trim();
+    const phone = String(body?.phone ?? "").trim();
     const message = String(body?.message ?? "").trim();
     const honeypot = String(body?.company ?? "").trim();
 
@@ -22,7 +27,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email." }, { status: 400 });
     }
 
-    console.log("[contact]", { name, email, message });
+    if (phone) {
+      const parsedPhone = parsePhoneNumberFromString(phone);
+      if (!parsedPhone || !parsedPhone.isValid()) {
+        return NextResponse.json({ error: "Invalid phone number." }, { status: 400 });
+      }
+    }
+
+    console.log("[contact]", { name, email, phone, message });
 
     return NextResponse.json({ success: true });
   } catch (error) {

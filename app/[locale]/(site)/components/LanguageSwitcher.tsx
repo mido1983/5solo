@@ -42,7 +42,7 @@ export default function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   };
 
   return (
-    <div className="flex items-center gap-1 rounded-full bg-surface/40 p-1 text-xs uppercase">
+    <div className="flex items-center gap-1 rounded-full bg-brand-overlay/70 p-1 text-[0.7rem] uppercase text-brand-muted">
       {locales.map((item) => {
         const isActive = item === currentLocale;
         return (
@@ -53,10 +53,10 @@ export default function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
             aria-pressed={isActive}
             disabled={isActive || isPending}
             className={clsx(
-              "rounded-full px-2 py-1 transition",
+              "rounded-full px-2 py-1 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary",
               isActive
-                ? "bg-accent-gold text-graphite-900 shadow-glow"
-                : "text-body/70 hover:text-body focus-visible:outline-offset-2"
+                ? "bg-accent-primary text-brand-base shadow-glow"
+                : "text-brand-muted hover:text-brand-foreground"
             )}
           >
             {item}

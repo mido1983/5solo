@@ -7,8 +7,9 @@ import {
   DEFAULT_DESCRIPTION,
   SITE_NAME,
   absoluteUrl,
-  getBaseUrl,
+  canonicalUrl,
   getDir,
+  languageAlternates,
 } from "@/lib/utils";
 
 import Footer from "./(site)/components/Footer";
@@ -42,22 +43,22 @@ export async function generateMetadata({
   }
 
   const messages = await resolveMessages(localeParam);
-  const title = t(messages, "seo.title", `${SITE_NAME} — ${FALLBACK_TAGLINE}`);
+  const tagline = t(messages, "brand.tagline", FALLBACK_TAGLINE);
+  const title = t(messages, "seo.title", `${SITE_NAME} — ${tagline}`);
   const description = t(messages, "seo.description", DEFAULT_DESCRIPTION);
-  const baseUrl = getBaseUrl();
 
   return {
     title,
     description,
     alternates: {
-      canonical: `${baseUrl}/${localeParam}`,
-      languages: Object.fromEntries(locales.map((loc) => [loc, `${baseUrl}/${loc}`])),
+      canonical: canonicalUrl(localeParam),
+      languages: languageAlternates(),
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `${baseUrl}/${localeParam}`,
+      url: canonicalUrl(localeParam),
       siteName: SITE_NAME,
       images: [
         {
@@ -95,11 +96,10 @@ export default async function LocaleLayout({
   const dir = getDir(localeParam);
 
   return (
-    <div className={`min-h-screen bg-graphite-900 text-body ${dir === "rtl" ? "rtl" : "ltr"}`}>
+    <div className={`min-h-screen bg-brand-base text-brand-foreground ${dir === "rtl" ? "rtl" : "ltr"}`}>
       <Header locale={localeParam} messages={messages} />
       <main>{children}</main>
       <Footer locale={localeParam} messages={messages} />
     </div>
   );
 }
-

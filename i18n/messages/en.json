@@ -1,165 +1,589 @@
-﻿{
+{
   "brand": {
     "tagline": "Five disciplines. One outcome."
   },
   "seo": {
-    "title": "5SOLO · Five disciplines. One outcome.",
-    "description": "5SOLO is a five-in-one studio covering development, design, SEO, media and care to launch your next product fast."
+    "title": "5SOLO � Five disciplines. One outcome.",
+    "description": "5SOLO unites development, design, SEO, media and care leaders to ship revenue-ready websites in days, not months."
   },
   "nav": {
     "home": "Home",
     "services": "Services",
-    "portfolio": "Portfolio",
+    "cases": "Case studies",
     "testimonials": "Testimonials",
     "contact": "Contact"
   },
   "hero": {
     "badge": "Full-stack studio",
     "title": "Five experts.<br/>One result.",
-    "subtitle": "Development, design, SEO, media and care teams working as one to ship revenue-ready MVPs in record time.",
-    "cta": "Book a consultation",
+    "subtitle": "Development, design, SEO, media and ongoing care operating as one senior squad. We launch conversion-ready experiences in under two weeks.",
+    "primaryCta": "Book a consultation",
     "secondaryCta": "Explore services",
-    "cards": {
-      "1": {
-        "title": "Launch time",
+    "metrics": [
+      {
+        "label": "Launch time",
         "value": "10 days"
       },
-      "2": {
-        "title": "Team",
-        "value": "5 leads"
+      {
+        "label": "Team leads",
+        "value": "5 specialists"
       },
-      "3": {
-        "title": "Deliverables",
+      {
+        "label": "Delivery",
         "value": "End-to-end"
       },
-      "4": {
-        "title": "Focus",
-        "value": "Impact"
+      {
+        "label": "Focus",
+        "value": "Measurable impact"
       }
-    }
+    ]
   },
   "about": {
     "label": "Who we are",
-    "title": "An orchestra of five soloists",
-    "text": "5SOLO unites development, design, SEO, media and client care. We build lean MVPs, orchestrate growth-ready sites and stay with you after launch to optimise every touchpoint."
+    "title": "Five soloists in sync",
+    "text": "5SOLO brings engineering, design, SEO, media and lifecycle care into one tightly run studio. We map the strategy, build the product-ready website and stay to optimise every touchpoint."
   },
   "services": {
     "label": "Services",
-    "title": "One studio. Five expert tracks.",
-    "subtitle": "Each track is led by a senior specialist and reinforced by the rest of the collective so you never lose momentum.",
-    "items": {
-      "dev": {
+    "title": "One studio. Five specialist tracks.",
+    "subtitle": "Each track is led by a senior practice lead and reinforced by the rest of the collective so you never lose velocity.",
+    "ctaLabel": "Scope the project",
+    "headings": {
+      "whatWeDo": "What we handle",
+      "benefits": "What you get",
+      "faq": "FAQ"
+    },
+    "items": [
+      {
+        "slug": "solo-dev",
         "title": "Solo Dev",
-        "description": "Product-minded engineering for blazing-fast Next.js builds, integrations and automation."
+        "tldr": "Launch-ready engineering for ambitious SaaS and product teams.",
+        "whatWeDo": [
+          "Technical architecture for scalable Next.js 14 apps",
+          "Integrations with analytics, billing and internal APIs",
+          "Automated testing, staging and observability pipelines"
+        ],
+        "benefits": [
+          "Core Web Vitals budgets met from sprint one",
+          "Reusable component library documented for your team",
+          "Transparent delivery rhythm with release notes each week"
+        ],
+        "faq": [
+          {
+            "question": "Can you work with an existing backend or design system?",
+            "answer": "Yes. We audit what is in place, map dependencies and extend your stack without reinventing what already works."
+          },
+          {
+            "question": "How do you ensure handover after launch?",
+            "answer": "We provide infrastructure diagrams, runbooks and live walkthroughs so your internal team can own the roadmap."
+          }
+        ]
       },
-      "design": {
+      {
+        "slug": "solo-design",
         "title": "Solo Design",
-        "description": "Brand, UI and UX crafted together to convert – responsive, accessible and on brief."
+        "tldr": "Brand, UI and UX crafted to convert across devices and languages.",
+        "whatWeDo": [
+          "Brand identity refresh tuned for digital channels",
+          "UX flows, wireframes and design systems in Figma",
+          "Accessible motion, microcopy and illustration guidelines"
+        ],
+        "benefits": [
+          "Consistent visuals across marketing, product and sales assets",
+          "Content-first layouts with localisation baked in",
+          "Design tokens and components synced with engineering"
+        ],
+        "faq": [
+          {
+            "question": "Do you handle copy and localisation?",
+            "answer": "We collaborate with your in-house writers or bring our partners to craft messaging for every market you serve."
+          },
+          {
+            "question": "Can we keep iterating after launch?",
+            "answer": "Yes. We ship a testing backlog with hypotheses and run paired design sprints to evolve the experience."
+          }
+        ]
       },
-      "seo": {
+      {
+        "slug": "solo-seo",
         "title": "Solo SEO",
-        "description": "Technical audits, keyword journeys and content systems aligned with your funnel."
+        "tldr": "Search, structural and content strategy tied to revenue goals.",
+        "whatWeDo": [
+          "Technical audits covering crawl, speed and schema",
+          "Keyword journey maps per persona and funnel stage",
+          "Editorial calendar and brief templates for writers"
+        ],
+        "benefits": [
+          "Priority backlog aligned with product and marketing plans",
+          "Dashboards tracking leading indicators, not vanity metrics",
+          "Cross-team rituals to keep SEO integrated post launch"
+        ],
+        "faq": [
+          {
+            "question": "Do you work with existing content teams?",
+            "answer": "We plug into your editors, deliver briefs and QA outputs so every piece meets technical and brand standards."
+          },
+          {
+            "question": "How fast can we see impact?",
+            "answer": "We combine quick technical wins with long-term plays, reporting on leading signals within the first month."
+          }
+        ]
       },
-      "media": {
+      {
+        "slug": "solo-media",
         "title": "Solo Media",
-        "description": "Launch-ready creative, motion and social assets powered by unified brand guidelines."
+        "tldr": "Campaign-ready creative, motion and social assets with one voice.",
+        "whatWeDo": [
+          "Launch concepts, moodboards and copy for key campaigns",
+          "Motion design, screen recordings and explainers",
+          "Adaptive assets for paid, organic and partner channels"
+        ],
+        "benefits": [
+          "Every channel launches with on-brand visuals on day one",
+          "Short feedback loops with collaborative reviews",
+          "Performance insights to iterate creative with data"
+        ],
+        "faq": [
+          {
+            "question": "Can you support ongoing content production?",
+            "answer": "We create reusable templates, train your team and stay available for high-impact drops."
+          },
+          {
+            "question": "Do you work with external media buyers?",
+            "answer": "Yes. We align on briefs, specs and testing cadence with any partner agency you already trust."
+          }
+        ]
       },
-      "care": {
+      {
+        "slug": "solo-care",
         "title": "Solo Care",
-        "description": "Post-launch optimisation, analytics and retention programmes with clear SLAs."
+        "tldr": "Post-launch optimisation, analytics and retention programmes.",
+        "whatWeDo": [
+          "Instrumentation of product and marketing analytics",
+          "Monitoring, uptime and regression guardrails",
+          "Lifecycle campaigns and support enablement"
+        ],
+        "benefits": [
+          "Shared dashboards with goals, alerts and ownership",
+          "Prioritised backlog of experiments and CRO ideas",
+          "Customer service playbooks and training material"
+        ],
+        "faq": [
+          {
+            "question": "How do retainers work?",
+            "answer": "We plan in quarterly OKRs with monthly sprints so you always know what is shipping and why."
+          },
+          {
+            "question": "Can we involve our in-house support team?",
+            "answer": "We pair with your CX leads, set up documentation workflows and coach the team through new releases."
+          }
+        ]
       }
-    }
+    ]
+  },
+  "offer": {
+    "label": "Bonus",
+    "title": "Free managed hosting for 12 months",
+    "subtitle": "New full-site clients get Vercel Pro hosting on us. Zero surprise bills while we optimise your launch.",
+    "bullets": [
+      "Up to 500k monthly visits and 1 TB bandwidth included",
+      "24/7 monitoring plus monthly performance reviews",
+      "Migration support when you outgrow the included plan"
+    ],
+    "cta": "Claim the offer",
+    "footnote": "After the first year we help you choose the right plan or migrate to your infrastructure."
+  },
+  "cases": {
+    "label": "Case studies",
+    "title": "Recent launch sprints",
+    "subtitle": "We partner with SaaS, healthcare and media teams that need a senior production crew.",
+    "detailLink": "View project",
+    "cta": "Launch your project",
+    "backLink": "Back to launches",
+    "items": [
+      {
+        "slug": "growthos",
+        "name": "GrowthOS",
+        "summary": "Subscription onboarding hub rebuilt for revenue operations.",
+        "result": "12-day rebuild with embedded analytics and billing automation.",
+        "thumbnail": "/images/cases/growthos-1.svg",
+        "detail": {
+          "heroTitle": "GrowthOS relaunched in 12 days",
+          "heroSubtitle": "We turned a fragmented onboarding journey into a guided product experience tied to revenue goals.",
+          "metrics": [
+            {
+              "label": "Signup completion",
+              "value": "+42%"
+            },
+            {
+              "label": "Sales prep time",
+              "value": "-6 hours weekly"
+            }
+          ],
+          "gallery": [
+            {
+              "src": "/images/cases/growthos-1.svg",
+              "alt": "GrowthOS dashboard overview"
+            },
+            {
+              "src": "/images/cases/growthos-2.svg",
+              "alt": "GrowthOS onboarding journey"
+            },
+            {
+              "src": "/images/cases/growthos-3.svg",
+              "alt": "GrowthOS revenue report"
+            }
+          ],
+          "stack": [
+            "Next.js 14",
+            "Supabase",
+            "HubSpot",
+            "Vercel"
+          ],
+          "sections": [
+            {
+              "title": "Challenge",
+              "body": [
+                "Enterprise prospects had to wait for manual onboarding and spreadsheets before seeing value.",
+                "Sales, success and product teams worked from different data, hurting activation goals."
+              ]
+            },
+            {
+              "title": "Solution",
+              "body": [
+                "We rebuilt the onboarding flow as modular Next.js journeys with role-based content.",
+                "Connected CRM, billing and product analytics so the revenue team sees live health scores."
+              ]
+            },
+            {
+              "title": "Impact",
+              "body": [
+                "Time-to-value dropped below one week for new accounts.",
+                "Sales reps demo with real activation data and automate success check-ins."
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "slug": "helix-labs",
+        "name": "Helix Labs",
+        "summary": "Biotech storytelling site with dynamic data visualisation.",
+        "result": "Investor-ready narrative supported by live scientific evidence and compliance workflows.",
+        "thumbnail": "/images/cases/helix-labs-1.svg",
+        "detail": {
+          "heroTitle": "Helix Labs closed their Series B with a data-rich site",
+          "heroSubtitle": "The marketing, research and legal teams needed one platform to explain complex science and capture inbound interest.",
+          "metrics": [
+            {
+              "label": "Deck requests",
+              "value": "+58%"
+            },
+            {
+              "label": "Compliance review",
+              "value": "-3 days"
+            }
+          ],
+          "gallery": [
+            {
+              "src": "/images/cases/helix-labs-1.svg",
+              "alt": "Helix Labs landing page"
+            },
+            {
+              "src": "/images/cases/helix-labs-2.svg",
+              "alt": "Helix Labs molecule visualisation"
+            },
+            {
+              "src": "/images/cases/helix-labs-3.svg",
+              "alt": "Helix Labs investor resources"
+            }
+          ],
+          "stack": [
+            "Next.js 14",
+            "DatoCMS",
+            "Vercel",
+            "Marketo"
+          ],
+          "sections": [
+            {
+              "title": "Challenge",
+              "body": [
+                "Scientific content sat in PDFs and internal tools, making it hard to explain outcomes to investors.",
+                "Compliance reviews delayed campaign launches because every edit needed a fresh legal pass."
+              ]
+            },
+            {
+              "title": "Solution",
+              "body": [
+                "Structured CMS models let scientists update claims with required references and approvals.",
+                "Interactive visualisations help non-technical audiences grasp the platform in under a minute."
+              ]
+            },
+            {
+              "title": "Impact",
+              "body": [
+                "Marketing runs investor and talent campaigns from one source of truth.",
+                "Legal approvals now happen inside the CMS workflow, cutting revision time in half."
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "slug": "atlas-media",
+        "name": "Atlas Media",
+        "summary": "High-volume campaign engine for a global media studio.",
+        "result": "Six tailored landing variations produced per week with automated QA and analytics.",
+        "thumbnail": "/images/cases/atlas-media-1.svg",
+        "detail": {
+          "heroTitle": "Atlas Media scaled personalised campaigns without adding headcount",
+          "heroSubtitle": "We built a component-driven system so the media team can launch, test and learn across markets in days.",
+          "metrics": [
+            {
+              "label": "Launch velocity",
+              "value": "6 variants/week"
+            },
+            {
+              "label": "Cost per lead",
+              "value": "-27%"
+            }
+          ],
+          "gallery": [
+            {
+              "src": "/images/cases/atlas-media-1.svg",
+              "alt": "Atlas Media landing system"
+            },
+            {
+              "src": "/images/cases/atlas-media-2.svg",
+              "alt": "Atlas Media localisation controls"
+            },
+            {
+              "src": "/images/cases/atlas-media-3.svg",
+              "alt": "Atlas Media analytics dashboard"
+            }
+          ],
+          "stack": [
+            "Next.js 14",
+            "Contentful",
+            "Vercel",
+            "Segment"
+          ],
+          "sections": [
+            {
+              "title": "Challenge",
+              "body": [
+                "Regional teams depended on a central dev squad, creating backlog bottlenecks.",
+                "QA struggled to keep up with localisation and compliance requirements."
+              ]
+            },
+            {
+              "title": "Solution",
+              "body": [
+                "Composable content blocks power localisation without touching code.",
+                "Automated checks cover brand, accessibility and tracking before each release."
+              ]
+            },
+            {
+              "title": "Impact",
+              "body": [
+                "Campaigns launch in hours, not weeks, with clear experimentation history.",
+                "Revenue teams see performance in real time and request iterations with data."
+              ]
+            }
+          ]
+        }
+      }
+    ]
   },
   "portfolio": {
-    "label": "Case studies",
+    "label": "Highlights",
     "title": "A sample of our launch sprints",
-    "subtitle": "We partner with SaaS, eCommerce and content teams that need a reliable production partner.",
-    "cta": "See project scope",
-    "items": {
-      "case1": {
-        "title": "GrowthOS",
-        "description": "Productised onboarding platform redesigned and shipped in 12 days.",
-        "alt": "GrowthOS dashboard preview"
-      },
-      "case2": {
-        "title": "Helix Labs",
-        "description": "Investor-ready biotech story site with interactive data visuals.",
-        "alt": "Helix Labs website preview"
-      },
-      "case3": {
-        "title": "Nimbus CX",
-        "description": "Customer care knowledge base with multilingual support workflows.",
-        "alt": "Nimbus CX knowledge base preview"
-      },
-      "case4": {
-        "title": "Atlas Media",
-        "description": "Campaign landing system producing 6 bespoke variations per week.",
-        "alt": "Atlas Media landing page preview"
-      }
-    }
+    "subtitle": "Explore how we combine strategy, design, engineering and media to deliver outcomes fast.",
+    "cta": "View project"
   },
   "testimonials": {
     "label": "Testimonials",
     "title": "Teams that ship with 5SOLO",
-    "subtitle": "Early-stage founders, CMOs and product leads choose us when they need senior execution without the overhead.",
+    "subtitle": "Founders, marketing leaders and product owners rely on us when they need senior execution without adding headcount.",
     "items": {
       "client1": {
-        "quote": "We signed our first enterprise client two weeks after launch. The stack, copy and tracking were ready from day one.",
+        "quote": "We signed our first enterprise client two weeks after launch. Tracking, copy and the sales deck were ready on day one.",
         "name": "Lena H.",
         "role": "Founder, GrowthOS"
       },
       "client2": {
-        "quote": "Design never outpaced development. Every sprint delivered a usable increment we could demo to stakeholders.",
+        "quote": "Design and development moved in lockstep. Every sprint delivered a usable increment to demo to investors.",
         "name": "Ilya T.",
         "role": "Head of Product, Helix Labs"
       },
       "client3": {
-        "quote": "They handled rollout, localisation and SEO migrations as one motion. Our support KPIs improved within the first month.",
+        "quote": "They handled localisation, SEO migration and success enablement in one motion. Support KPIs climbed within the first month.",
         "name": "Marina P.",
         "role": "CX Director, Nimbus"
       }
     }
   },
   "cta": {
-    "label": "Offer",
+    "label": "Turnkey launch",
     "title": "MVP-ready website in 10 days",
-    "subtitle": "Kick-off within 48 hours. Fixed scope, transparent pricing, senior team on every task.",
-    "button": "Start the project"
+    "subtitle": "Kick off within 48 hours. Fixed scope, transparent pricing and a senior squad on every task.",
+    "button": "Launch with 5SOLO"
   },
   "contact": {
     "label": "Contact",
     "title": "Tell us about your launch",
-    "subtitle": "Share goals, timeline and the channels you need. We respond within one business day.",
-    "name": "Your name",
+    "subtitle": "Share goals, integrations and timeline. We respond within one business day.",
+    "name": "Full name",
     "email": "Work email",
+    "phone": "Phone number",
+    "phoneOptional": "(optional)",
+    "phonePlaceholder": "+1 646 000 5050",
     "message": "Project details",
     "submit": "Send request",
-    "sending": "Sending…",
-    "sidebar": {
-      "title": "Prefer a direct line?",
-      "description": "Write or call us and we will set up a discovery call with the lead specialists.",
-      "emailLabel": "Email",
-      "phoneLabel": "Phone"
-    }
-  },
-  "form": {
-    "success": "Thanks! We will get back within one working day.",
-    "error": "Something went wrong. Please try again later.",
+    "status": {
+      "idle": "Send request",
+      "sending": "Sending...",
+      "success": "Thanks! We will get back within one working day.",
+      "error": "Something went wrong. Please try again later."
+    },
     "validation": {
-      "required": "Please fill in all required fields."
-    }
+      "required": "Please fill in all required fields.",
+      "email": "Enter a valid email address.",
+      "phone": "Enter a valid international phone number starting with +."
+    },
+    "requiredHint": "Fields marked * are required."
   },
   "footer": {
     "tagline": "Independent studio shipping end-to-end launches.",
-    "contact": {
-      "email": "hello@5solo.studio",
-      "phoneDisplay": "+1 646 000 5050",
-      "phoneLink": "+16460005050"
-    },
     "rights": "All rights reserved.",
     "links": {
-      "privacy": "Privacy",
-      "terms": "Terms"
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use"
+    }
+  },
+  "legal": {
+    "backLink": "Back to home",
+    "privacy": {
+      "title": "Privacy Policy",
+      "updated": "Updated: 3 October 2025",
+      "intro": "This policy explains how 5SOLO Studio collects, uses and protects personal data when you interact with our website, portfolio and services.",
+      "sections": [
+        {
+          "title": "Data we collect",
+          "body": [
+            "Contact form details you submit: name, email, phone (optional) and project message.",
+            "Usage information such as device, browser and pages visited, captured through privacy-friendly analytics.",
+            "Transactional data if you become a client, including billing details and contract records."
+          ]
+        },
+        {
+          "title": "How we use data",
+          "body": [
+            "To reply to project enquiries and prepare proposals.",
+            "To provide, maintain and improve our services, infrastructure and security.",
+            "To meet legal obligations and keep accurate business records."
+          ]
+        },
+        {
+          "title": "Legal bases",
+          "body": [
+            "We process contact form data on the basis of legitimate interest to respond to your request.",
+            "We rely on contractual necessity when delivering services you have commissioned.",
+            "Where required, we request your consent before enabling optional analytics or marketing cookies."
+          ]
+        },
+        {
+          "title": "Retention and security",
+          "body": [
+            "Project enquiries are kept for up to 24 months unless we start a working relationship.",
+            "Client records are stored for the duration of the engagement and legal retention periods.",
+            "We use modern hosting, encryption in transit and strict access controls to protect your information."
+          ]
+        },
+        {
+          "title": "Your rights",
+          "body": [
+            "You can request access, correction or deletion of your personal data at any time.",
+            "To exercise your rights under GDPR or CCPA, contact privacy@5solo.studio.",
+            "We will respond within 30 days and work with you to resolve any concerns."
+          ]
+        },
+        {
+          "title": "Contact",
+          "body": [
+            "Email privacy@5solo.studio for privacy questions, data requests or compliance enquiries."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "updated": "Updated: 3 October 2025",
+      "intro": "These terms govern your access to the 5SOLO Studio website and the services we provide. By working with us you agree to these conditions.",
+      "sections": [
+        {
+          "title": "Scope of services",
+          "body": [
+            "We deliver strategy, design, engineering, SEO, media and care services as described in agreed proposals.",
+            "Any changes to scope, timing or deliverables will be documented and approved in writing."
+          ]
+        },
+        {
+          "title": "Client responsibilities",
+          "body": [
+            "Provide timely access to stakeholders, assets and systems required to perform the work.",
+            "Review and approve deliverables within mutually agreed feedback windows."
+          ]
+        },
+        {
+          "title": "Fees and payment",
+          "body": [
+            "Invoices are issued according to milestone or retainer schedules defined in the proposal.",
+            "Payments are due within 15 days unless different terms are stated. Late payments may pause work."
+          ]
+        },
+        {
+          "title": "Intellectual property",
+          "body": [
+            "Upon full payment you receive ownership of final deliverables created specifically for you.",
+            "We retain the right to reference non-confidential work in our portfolio unless you request otherwise."
+          ]
+        },
+        {
+          "title": "Confidentiality",
+          "body": [
+            "Each party agrees to protect confidential information shared during the engagement.",
+            "We sign NDAs on request and handle sensitive data according to industry best practice."
+          ]
+        },
+        {
+          "title": "Liability",
+          "body": [
+            "We provide services with reasonable skill and care. Our liability is limited to the fees paid for the affected work.",
+            "We are not liable for indirect, incidental or consequential damages arising from the engagement."
+          ]
+        },
+        {
+          "title": "Termination",
+          "body": [
+            "Either party may terminate the agreement with 14 days written notice if the other party materially breaches the terms and fails to cure the breach.",
+            "Upon termination you are responsible for work completed to date and any committed third-party costs."
+          ]
+        },
+        {
+          "title": "Governing law",
+          "body": [
+            "These terms are governed by the laws of the United Kingdom unless stated otherwise in the proposal.",
+            "Disputes will be resolved through good faith negotiation before considering arbitration or courts."
+          ]
+        },
+        {
+          "title": "Contact",
+          "body": [
+            "Email legal@5solo.studio with questions about these terms or to request a signed agreement."
+          ]
+        }
+      ]
     }
   }
 }
