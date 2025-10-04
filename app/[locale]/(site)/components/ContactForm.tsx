@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import TurnstileWidget from "@/components/anti-spam/TurnstileWidget";
+import TurnstileBox from "@/components/anti-spam/TurnstileBox";
 import PhoneInlineField, { type PhoneValue } from "@/components/phone/phone-inline";
 import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
 import { t, type Messages } from "@/lib/i18n";
@@ -356,7 +356,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
       <input type="hidden" {...register("ts")} />
       <input type="hidden" {...register("turnstileToken")} />
       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        <TurnstileWidget
+        <TurnstileBox
           key={captchaRefresh}
           siteKey={siteKey}
           onVerify={handleTurnstileVerify}

@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 
 import "@/styles/tailwind.css";
 import "@/styles/globals.css";
@@ -43,6 +44,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="bg-brand-base text-brand-foreground antialiased">
         {children}
+        <Script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
