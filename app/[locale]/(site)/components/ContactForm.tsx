@@ -47,6 +47,7 @@ const clampPhoneValue = (value?: PhoneValue): PhoneValue => {
 export default function ContactForm({ messages }: ContactFormProps) {
   // To reuse this form elsewhere, supply localized messages and configure Turnstile keys in the environment.
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [formError, setFormError] = useState<string>("");
   const [captchaRefresh, setCaptchaRefresh] = useState(0);
 
   const {
@@ -89,7 +90,8 @@ export default function ContactForm({ messages }: ContactFormProps) {
 
   const handleTurnstileVerify = (token: string) => {
     setValue("turnstileToken", token, { shouldValidate: true });
-    clearErrors(["turnstileToken", "root"]);
+    clearErrors("turnstileToken");
+    setFormError("");
   };
 
   const handleTurnstileExpire = () => {
@@ -110,7 +112,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
     }
 
     setStatus("sending");
-    clearErrors("root");
+    setFormError("");
 
     const phoneSanitized = clampPhoneValue({
       countryCode: values.phone?.countryCode,
@@ -152,28 +154,25 @@ export default function ContactForm({ messages }: ContactFormProps) {
 
         switch (errorCode) {
           case "honeypot":
-            setError("root", { type: "server", message: suspiciousMessage });
+            setFormError(suspiciousMessage);
             break;
           case "too_fast":
-            setError("root", { type: "server", message: tooFastMessage });
+            setFormError(tooFastMessage);
             break;
           case "captcha_failed":
             setError("turnstileToken", { type: "server", message: captchaRequiredMessage });
+            setValue("turnstileToken", "", { shouldValidate: true });
             setCaptchaRefresh((key) => key + 1);
             break;
           case "missing_fields":
-            setError("root", { type: "server", message: requiredMessage });
+            setFormError(requiredMessage);
             break;
           case "phone_invalid":
-            setError("root", { type: "server", message: phoneInvalidMessage });
+            setFormError(phoneInvalidMessage);
             break;
           default:
-            setError("root", { type: "server", message: tryAgainMessage });
+            setFormError(tryAgainMessage);
             break;
-        }
-
-        if (errorCode === "captcha_failed") {
-          setValue("turnstileToken", "", { shouldValidate: true });
         }
 
         setStatus("error");
@@ -190,18 +189,20 @@ export default function ContactForm({ messages }: ContactFormProps) {
         turnstileToken: "",
       });
       setCaptchaRefresh((key) => key + 1);
+      setFormError("");
       setStatus("success");
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
         console.error("[contact:client:error]", error);
       }
-      setError("root", { type: "server", message: tryAgainMessage });
+      setFormError(tryAgainMessage);
       setStatus("error");
     }
   };
 
   const buttonLabel = isSending ? translate("form.sending") : translate("form.submit");
-  const focusOutline = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary";
+  const focusOutline =
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary";
 
   return (
     <form
@@ -292,7 +293,8 @@ export default function ContactForm({ messages }: ContactFormProps) {
           };
 
           const handleFieldBlur = () => {
-            const currentCountry = digitsOnly(field.value?.countryCode ?? DEFAULT_PHONE.countryCode) || DEFAULT_PHONE.countryCode;
+            const currentCountry =
+              digitsOnly(field.value?.countryCode ?? DEFAULT_PHONE.countryCode) || DEFAULT_PHONE.countryCode;
             const normalizedNational = stripOneLeadingZero(digitsOnly(field.value?.national ?? ""));
             field.onChange({
               countryCode: currentCountry,
@@ -383,9 +385,9 @@ export default function ContactForm({ messages }: ContactFormProps) {
         )}
         {buttonLabel}
       </button>
-      {(errors.turnstileToken || errors.root) && (
+      {(errors.turnstileToken || formError) && (
         <p className="text-sm text-accent-danger" role="alert" aria-live="polite">
-          {errors.turnstileToken?.message ?? errors.root?.message}
+          {errors.turnstileToken?.message ?? formError}
         </p>
       )}
       {status === "success" && (
