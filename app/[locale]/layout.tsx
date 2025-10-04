@@ -1,21 +1,14 @@
 ﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { metaByLocale, type SupportedLocale } from "@/i18n/meta";
 import { defaultLocale, isLocale, locales, type Locale } from "@/i18n/locales";
-import { getMessages, t, type Messages } from "@/lib/i18n";
-import {
-  DEFAULT_DESCRIPTION,
-  SITE_NAME,
-  absoluteUrl,
-  canonicalUrl,
-  getDir,
-  languageAlternates,
-} from "@/lib/utils";
+import { SITE_URL, BRAND } from "@/lib/site";
+import { getMessages, type Messages } from "@/lib/i18n";
+import { getDir } from "@/lib/utils";
 
 import Footer from "./(site)/components/Footer";
 import Header from "./(site)/components/Header";
-
-const FALLBACK_TAGLINE = "Five disciplines. One outcome.";
 
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -35,46 +28,51 @@ async function resolveMessages(locale: Locale): Promise<Messages> {
 export async function generateMetadata({
   params,
 }: {
-  params: { locale: string };
+  params: { locale: SupportedLocale };
 }): Promise<Metadata> {
-  const { locale: localeParam } = params;
-  if (!isLocale(localeParam)) {
+  const { locale } = params;
+
+  if (!isLocale(locale)) {
     notFound();
   }
 
-  const messages = await resolveMessages(localeParam);
-  const tagline = t(messages, "brand.tagline", FALLBACK_TAGLINE);
-  const title = t(messages, "seo.title", `${SITE_NAME} — ${tagline}`);
-  const description = t(messages, "seo.description", DEFAULT_DESCRIPTION);
+  const meta = metaByLocale[locale] ?? metaByLocale.en;
+  const ogImage = `${SITE_URL}/og-1200x630.jpg?v=1`;
+  const href = (lang: SupportedLocale) => `${SITE_URL}/${lang}`;
+  const openGraphLocale = locale === "he" ? "he_IL" : locale === "ru" ? "ru_RU" : "en_US";
 
   return {
-    title,
-    description,
+    title: meta.title,
+    description: meta.description,
     alternates: {
-      canonical: canonicalUrl(localeParam),
-      languages: languageAlternates(),
+      canonical: href(locale),
+      languages: {
+        en: href("en"),
+        ru: href("ru"),
+        he: href("he"),
+      },
     },
     openGraph: {
-      title,
-      description,
       type: "website",
-      url: canonicalUrl(localeParam),
-      siteName: SITE_NAME,
+      url: href(locale),
+      siteName: BRAND,
+      title: meta.title,
+      description: meta.description,
       images: [
         {
-          url: absoluteUrl("/og.png"),
+          url: ogImage,
           width: 1200,
           height: 630,
-          alt: SITE_NAME,
+          alt: meta.title,
         },
       ],
-      locale: localeParam,
+      locale: openGraphLocale,
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
-      images: [absoluteUrl("/og.png")],
+      title: meta.title,
+      description: meta.description,
+      images: [ogImage],
     },
   } satisfies Metadata;
 }
