@@ -1,7 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { digitsOnly, normalizeNational, toE164 } from "@/components/phone/phone-utils";
+import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
 
 export const runtime = "edge";
 
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     const countryCode = digitsOnly(String(body?.phone_country_code ?? ""));
     const nationalRaw = String(body?.phone_national ?? "");
-    const national = normalizeNational(nationalRaw);
+    const national = stripOneLeadingZero(digitsOnly(nationalRaw));
     const phoneE164 = String(body?.phone_e164 ?? "").trim();
 
     if (!name || !email || !message || !countryCode || !national) {
@@ -47,17 +47,17 @@ export async function POST(request: Request) {
     }
 
     const html = `
-      <h2>Новая заявка с сайта 5SOLO</h2>
-      <p><strong>Имя:</strong> ${escapeHtml(name)}</p>
+      <h2>????? ?????? ? ????? 5SOLO</h2>
+      <p><strong>???:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <p><strong>Телефон:</strong> ${escapeHtml(expectedE164)}</p>
-      <p><strong>Сообщение:</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
+      <p><strong>???????:</strong> ${escapeHtml(expectedE164)}</p>
+      <p><strong>?????????:</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
     `;
 
     await resend.emails.send({
       from: FROM,
       to: [TO],
-      subject: "5SOLO - новая заявка",
+      subject: "5SOLO - ????? ??????",
       html,
       reply_to: email || undefined,
     });

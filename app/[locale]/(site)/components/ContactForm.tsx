@@ -3,14 +3,15 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { PhoneField, type PhonePayload } from "@/components/phone/PhoneField";
+import PhoneInlineField, { type PhoneValue } from "@/components/phone/phone-inline";
+import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
 import { t, type Messages } from "@/lib/i18n";
 
 type ContactFormValues = {
   name: string;
   email: string;
   message: string;
-  phone: PhonePayload;
+  phone: PhoneValue;
   company?: string;
 };
 
@@ -20,10 +21,22 @@ interface ContactFormProps {
   messages: Messages;
 }
 
-const DEFAULT_PHONE: PhonePayload = {
-  countryCode: "972",
+const DEFAULT_COUNTRY = "972";
+const DEFAULT_PHONE: PhoneValue = {
+  countryCode: DEFAULT_COUNTRY,
   national: "",
-  e164: "+972",
+  e164: toE164(DEFAULT_COUNTRY, ""),
+};
+
+const clampPhoneValue = (value?: PhoneValue): PhoneValue => {
+  const nextCountry = digitsOnly(value?.countryCode ?? DEFAULT_PHONE.countryCode) || DEFAULT_PHONE.countryCode;
+  const nextNationalDigits = digitsOnly(value?.national ?? "");
+
+  return {
+    countryCode: nextCountry,
+    national: nextNationalDigits,
+    e164: toE164(nextCountry, nextNationalDigits),
+  };
 };
 
 export default function ContactForm({ messages }: ContactFormProps) {
@@ -52,8 +65,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
     setStatus("sending");
     setErrorMessage("");
 
-    const { phone } = values;
-    const nationalLength = phone.national.length;
+    const phoneSanitized = clampPhoneValue({
+      countryCode: values.phone?.countryCode,
+      national: stripOneLeadingZero(values.phone?.national ?? ""),
+      e164: values.phone?.e164 ?? "",
+    });
+    const nationalLength = phoneSanitized.national.length;
 
     if (nationalLength < 7 || nationalLength > 15) {
       setStatus("error");
@@ -65,9 +82,9 @@ export default function ContactForm({ messages }: ContactFormProps) {
       name: values.name,
       email: values.email,
       message: values.message,
-      phone_e164: phone.e164,
-      phone_country_code: phone.countryCode,
-      phone_national: phone.national,
+      phone_e164: phoneSanitized.e164,
+      phone_country_code: phoneSanitized.countryCode,
+      phone_national: phoneSanitized.national,
       company: values.company ?? "",
     };
 
@@ -110,6 +127,8 @@ export default function ContactForm({ messages }: ContactFormProps) {
 
   const buttonLabel = isSubmitting || status === "sending" ? translate("form.sending") : translate("form.submit");
 
+  const focusOutline = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary";
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -128,7 +147,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
             {...register("name", { required: translate("form.required") })}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? "name-error" : undefined}
-            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+            className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted ${focusOutline}`}
             placeholder={translate("form.name")}
           />
           {errors.name && (
@@ -153,7 +172,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
             })}
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? "email-error" : undefined}
-            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+            className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted ${focusOutline}`}
             placeholder={translate("form.email")}
           />
           {errors.email && (
@@ -169,7 +188,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
         rules={{
           required: translate("form.required"),
           validate: (value) => {
-            const length = value?.national?.length ?? 0;
+            const sanitized = clampPhoneValue({
+              countryCode: value?.countryCode,
+              national: stripOneLeadingZero(value?.national ?? ""),
+              e164: value?.e164 ?? "",
+            });
+            const length = sanitized.national.length;
             if (!length) {
               return translate("form.required");
             }
@@ -179,16 +203,52 @@ export default function ContactForm({ messages }: ContactFormProps) {
             return true;
           },
         }}
-        render={({ field: { value, onChange }, fieldState: { error } }) => (
-          <PhoneField
-            value={value}
-            onChange={onChange}
-            error={error?.message}
-            label={translate("form.phone")}
-            placeholder={translate("form.phonePlaceholder")}
-            countryLabel={translate("form.countryCode")}
-          />
-        )}
+        render={({ field, fieldState }) => {
+          const error = fieldState.error?.message;
+          const describedBy = error ? "phone-error" : undefined;
+
+          const handleFieldChange = (nextValue: PhoneValue) => {
+            const countryCode = digitsOnly(nextValue.countryCode) || DEFAULT_PHONE.countryCode;
+            const nationalDigits = digitsOnly(nextValue.national);
+            field.onChange({
+              countryCode,
+              national: nationalDigits,
+              e164: toE164(countryCode, nationalDigits),
+            });
+          };
+
+          const handleFieldBlur = () => {
+            const currentCountry = digitsOnly(field.value?.countryCode ?? DEFAULT_PHONE.countryCode) || DEFAULT_PHONE.countryCode;
+            const normalizedNational = stripOneLeadingZero(digitsOnly(field.value?.national ?? ""));
+            field.onChange({
+              countryCode: currentCountry,
+              national: normalizedNational,
+              e164: toE164(currentCountry, normalizedNational),
+            });
+            field.onBlur();
+          };
+
+          return (
+            <label className="flex flex-col gap-2 text-sm text-brand-muted">
+              <span className="font-medium text-brand-foreground">
+                {translate("form.phone")} <span aria-hidden>*</span>
+              </span>
+              <PhoneInlineField
+                value={field.value}
+                onChange={handleFieldChange}
+                onBlur={handleFieldBlur}
+                name={field.name}
+                ariaInvalid={Boolean(error)}
+                describedBy={describedBy}
+              />
+              {error && (
+                <span id="phone-error" className="text-sm text-accent-danger" role="alert">
+                  {error}
+                </span>
+              )}
+            </label>
+          );
+        }}
       />
       <label className="flex flex-col gap-2 text-sm text-brand-muted">
         <span className="font-medium text-brand-foreground">
@@ -199,7 +259,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
           {...register("message", { required: translate("form.required") })}
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
-          className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+          className={`w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted ${focusOutline}`}
           placeholder={translate("form.message")}
         />
         {errors.message && (
@@ -216,7 +276,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
       )}
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-full bg-accent-primary px-6 py-3 text-sm font-semibold text-brand-base shadow-glow transition hover:scale-[1.01] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary disabled:opacity-60"
+        className={`inline-flex items-center justify-center rounded-full bg-accent-primary px-6 py-3 text-sm font-semibold text-brand-base shadow-glow transition hover:scale-[1.01] disabled:opacity-60 ${focusOutline}`}
         disabled={isSubmitting || status === "sending"}
       >
         {buttonLabel}
