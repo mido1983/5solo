@@ -22,7 +22,9 @@ export default function ContactForm({ messages }: ContactFormProps) {
     event.preventDefault();
     setErrorMessage("");
 
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
+
     const honeypot = String(form.get("company") ?? "");
     if (honeypot) {
       return;
@@ -54,26 +56,28 @@ export default function ContactForm({ messages }: ContactFormProps) {
       });
 
       if (!response.ok) {
-        let data: { error?: string } | null = null;
+        let errorCode: string | undefined;
         try {
-          data = await response.json();
+          const data = await response.json();
+          errorCode = data?.error;
         } catch (error) {
-          data = null;
+          errorCode = undefined;
         }
 
-        if (data?.error === "PHONE_INVALID") {
+        if (errorCode === "PHONE_INVALID") {
           setErrorMessage(translate("form.phoneInvalid"));
-        } else if (data?.error === "MISSING_FIELDS") {
+        } else if (errorCode === "MISSING_FIELDS") {
           setErrorMessage(translate("form.required"));
         } else {
           setErrorMessage(translate("form.tryAgain"));
         }
+
         setStatus("error");
         return;
       }
 
+      formElement.reset();
       setStatus("success");
-      (event.currentTarget as HTMLFormElement).reset();
     } catch (error) {
       console.error("[contact:client:error]", error);
       setErrorMessage(translate("form.error"));
