@@ -593,6 +593,7 @@
     "name": "Имя",
     "email": "Email",
     "phone": "Телефон",
+    "countryCode": "Код страны",
     "phonePlaceholder": "+972 12 34 567 89",
     "message": "Сообщение",
     "submit": "Отправить заявку",

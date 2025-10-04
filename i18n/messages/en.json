@@ -590,6 +590,7 @@
     "name": "Name",
     "email": "Email",
     "phone": "Phone",
+    "countryCode": "Country code",
     "phonePlaceholder": "+972 12 34 567 89",
     "message": "Project details",
     "submit": "Send request",
