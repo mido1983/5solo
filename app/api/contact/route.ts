@@ -2,6 +2,7 @@
 import { Resend } from "resend";
 
 import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
+import { isHoneypotHit, isTooFast, verifyTurnstile } from "@/lib/antispam";
 
 export const runtime = "edge";
 
@@ -9,14 +10,37 @@ const TO = "m0504471533@gmail.com";
 const FROM = "5SOLO <no-reply@5solo.com>";
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const MIN_SUBMIT_DELAY_MS = 3000;
+const isDev = process.env.NODE_ENV !== "production";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const company = typeof body?.company === "string" ? body.company.trim() : "";
-    if (company) {
-      return NextResponse.json({ ok: true });
+    const website = typeof body?.website === "string" ? body.website.trim() : "";
+    if (isHoneypotHit(website)) {
+      return NextResponse.json({ error: "honeypot" }, { status: 400 });
+    }
+
+    const tsClientRaw = typeof body?.ts === "string" || typeof body?.ts === "number" ? body.ts : "0";
+    if (isTooFast(tsClientRaw, MIN_SUBMIT_DELAY_MS)) {
+      return NextResponse.json({ error: "too_fast" }, { status: 400 });
+    }
+
+    const turnstileToken = typeof body?.turnstileToken === "string" ? body.turnstileToken.trim() : "";
+    if (!turnstileToken) {
+      return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
+    }
+
+    const ipHeader =
+      request.headers.get("cf-connecting-ip") ??
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      request.headers.get("x-real-ip") ??
+      undefined;
+
+    const captcha = await verifyTurnstile(turnstileToken, ipHeader);
+    if (!captcha.success) {
+      return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
     }
 
     const name = String(body?.name ?? "").trim();
@@ -29,21 +53,23 @@ export async function POST(request: Request) {
     const phoneE164 = String(body?.phone_e164 ?? "").trim();
 
     if (!name || !email || !message || !countryCode || !national) {
-      return NextResponse.json({ error: "MISSING_FIELDS" }, { status: 400 });
+      return NextResponse.json({ error: "missing_fields" }, { status: 400 });
     }
 
     if (national.length < 7 || national.length > 15) {
-      return NextResponse.json({ error: "PHONE_INVALID" }, { status: 400 });
+      return NextResponse.json({ error: "phone_invalid" }, { status: 400 });
     }
 
     const expectedE164 = toE164(countryCode, national);
     if (phoneE164 !== expectedE164) {
-      return NextResponse.json({ error: "PHONE_INVALID" }, { status: 400 });
+      return NextResponse.json({ error: "phone_invalid" }, { status: 400 });
     }
 
     if (!resend) {
-      console.error("[contact:error] RESEND_API_KEY missing");
-      return NextResponse.json({ error: "CONFIG_MISSING" }, { status: 500 });
+      if (isDev) {
+        console.error("[contact:error] RESEND_API_KEY missing");
+      }
+      return NextResponse.json({ error: "config_missing" }, { status: 500 });
     }
 
     const html = `
@@ -51,7 +77,7 @@ export async function POST(request: Request) {
       <p><strong>???:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
       <p><strong>???????:</strong> ${escapeHtml(expectedE164)}</p>
-      <p><strong>?????????:</strong><br/>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
+      <p><strong>?????????:</strong><br/>${escapeHtml(message).replace(/\\n/g, "<br/>")}</p>
     `;
 
     await resend.emails.send({
@@ -64,8 +90,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("[contact:error]", error);
-    return NextResponse.json({ error: "SEND_FAILED" }, { status: 500 });
+    if (isDev) {
+      console.error("[contact:error]", error);
+    }
+    return NextResponse.json({ error: "send_failed" }, { status: 500 });
   }
 }
 

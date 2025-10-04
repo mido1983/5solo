@@ -3,16 +3,21 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
+import TurnstileWidget from "@/components/anti-spam/TurnstileWidget";
 import PhoneInlineField, { type PhoneValue } from "@/components/phone/phone-inline";
 import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
 import { t, type Messages } from "@/lib/i18n";
+
+const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 type ContactFormValues = {
   name: string;
   email: string;
   message: string;
   phone: PhoneValue;
-  company?: string;
+  website: string;
+  ts: string;
+  turnstileToken: string;
 };
 
 type FormStatus = "idle" | "sending" | "success" | "error";
@@ -40,14 +45,19 @@ const clampPhoneValue = (value?: PhoneValue): PhoneValue => {
 };
 
 export default function ContactForm({ messages }: ContactFormProps) {
+  // To reuse this form elsewhere, supply localized messages and configure Turnstile keys in the environment.
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [captchaRefresh, setCaptchaRefresh] = useState(0);
 
   const {
     register,
     handleSubmit,
     control,
     reset,
+    setError,
+    clearErrors,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ContactFormValues>({
     defaultValues: {
@@ -55,15 +65,52 @@ export default function ContactForm({ messages }: ContactFormProps) {
       email: "",
       message: "",
       phone: DEFAULT_PHONE,
-      company: "",
+      website: "",
+      ts: Date.now().toString(),
+      turnstileToken: "",
     },
   });
 
   const translate = (key: string) => t(messages, key);
+  const withFallback = (key: string, fallback: string) => {
+    const value = translate(key);
+    return value && value.length > 0 ? value : fallback;
+  };
+
+  const captchaRequiredMessage = withFallback("form.captchaRequired", "Подтвердите, что вы не бот");
+  const tooFastMessage = withFallback("form.tooFast", "Слишком быстрое отправление");
+  const suspiciousMessage = withFallback("form.suspicious", "Подозрительная активность");
+  const phoneInvalidMessage = withFallback("form.phoneInvalid", "Неверный номер телефона");
+  const requiredMessage = withFallback("form.required", "Обязательное поле");
+  const tryAgainMessage = withFallback("form.tryAgain", "Попробуйте снова позже");
+
+  const turnstileToken = watch("turnstileToken");
+  const isSending = isSubmitting || status === "sending";
+
+  const handleTurnstileVerify = (token: string) => {
+    setValue("turnstileToken", token, { shouldValidate: true });
+    clearErrors(["turnstileToken", "root"]);
+  };
+
+  const handleTurnstileExpire = () => {
+    setValue("turnstileToken", "", { shouldValidate: true });
+    setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
+  };
+
+  const handleTurnstileError = () => {
+    setValue("turnstileToken", "", { shouldValidate: true });
+    setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
+  };
 
   const onSubmit = async (values: ContactFormValues) => {
+    if (!values.turnstileToken) {
+      setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
+      setStatus("error");
+      return;
+    }
+
     setStatus("sending");
-    setErrorMessage("");
+    clearErrors("root");
 
     const phoneSanitized = clampPhoneValue({
       countryCode: values.phone?.countryCode,
@@ -74,7 +121,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
 
     if (nationalLength < 7 || nationalLength > 15) {
       setStatus("error");
-      setErrorMessage(translate("form.phoneInvalid"));
+      setError("phone", { type: "manual", message: phoneInvalidMessage });
       return;
     }
 
@@ -85,7 +132,9 @@ export default function ContactForm({ messages }: ContactFormProps) {
       phone_e164: phoneSanitized.e164,
       phone_country_code: phoneSanitized.countryCode,
       phone_national: phoneSanitized.national,
-      company: values.company ?? "",
+      website: values.website,
+      ts: values.ts,
+      turnstileToken: values.turnstileToken,
     };
 
     try {
@@ -99,13 +148,34 @@ export default function ContactForm({ messages }: ContactFormProps) {
 
       if (!response.ok) {
         const data = await response.json().catch(() => ({}));
-        if (data?.error === "PHONE_INVALID") {
-          setErrorMessage(translate("form.phoneInvalid"));
-        } else if (data?.error === "MISSING_FIELDS") {
-          setErrorMessage(translate("form.required"));
-        } else {
-          setErrorMessage(translate("form.tryAgain"));
+        const errorCode = typeof data?.error === "string" ? data.error : "unknown";
+
+        switch (errorCode) {
+          case "honeypot":
+            setError("root", { type: "server", message: suspiciousMessage });
+            break;
+          case "too_fast":
+            setError("root", { type: "server", message: tooFastMessage });
+            break;
+          case "captcha_failed":
+            setError("turnstileToken", { type: "server", message: captchaRequiredMessage });
+            setCaptchaRefresh((key) => key + 1);
+            break;
+          case "missing_fields":
+            setError("root", { type: "server", message: requiredMessage });
+            break;
+          case "phone_invalid":
+            setError("root", { type: "server", message: phoneInvalidMessage });
+            break;
+          default:
+            setError("root", { type: "server", message: tryAgainMessage });
+            break;
         }
+
+        if (errorCode === "captcha_failed") {
+          setValue("turnstileToken", "", { shouldValidate: true });
+        }
+
         setStatus("error");
         return;
       }
@@ -115,18 +185,22 @@ export default function ContactForm({ messages }: ContactFormProps) {
         email: "",
         message: "",
         phone: DEFAULT_PHONE,
-        company: "",
+        website: "",
+        ts: Date.now().toString(),
+        turnstileToken: "",
       });
+      setCaptchaRefresh((key) => key + 1);
       setStatus("success");
     } catch (error) {
-      console.error("[contact:client:error]", error);
-      setErrorMessage(translate("form.error"));
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[contact:client:error]", error);
+      }
+      setError("root", { type: "server", message: tryAgainMessage });
       setStatus("error");
     }
   };
 
-  const buttonLabel = isSubmitting || status === "sending" ? translate("form.sending") : translate("form.submit");
-
+  const buttonLabel = isSending ? translate("form.sending") : translate("form.submit");
   const focusOutline = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary";
 
   return (
@@ -144,7 +218,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
           <input
             type="text"
             autoComplete="name"
-            {...register("name", { required: translate("form.required") })}
+            {...register("name", { required: requiredMessage })}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? "name-error" : undefined}
             className={`w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted ${focusOutline}`}
@@ -164,10 +238,10 @@ export default function ContactForm({ messages }: ContactFormProps) {
             type="email"
             autoComplete="email"
             {...register("email", {
-              required: translate("form.required"),
+              required: requiredMessage,
               pattern: {
                 value: /.+@.+\..+/, // basic validation
-                message: translate("form.required"),
+                message: requiredMessage,
               },
             })}
             aria-invalid={Boolean(errors.email)}
@@ -186,7 +260,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
         name="phone"
         control={control}
         rules={{
-          required: translate("form.required"),
+          required: requiredMessage,
           validate: (value) => {
             const sanitized = clampPhoneValue({
               countryCode: value?.countryCode,
@@ -195,10 +269,10 @@ export default function ContactForm({ messages }: ContactFormProps) {
             });
             const length = sanitized.national.length;
             if (!length) {
-              return translate("form.required");
+              return requiredMessage;
             }
             if (length < 7 || length > 15) {
-              return translate("form.phoneInvalid");
+              return phoneInvalidMessage;
             }
             return true;
           },
@@ -256,7 +330,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
         </span>
         <textarea
           rows={5}
-          {...register("message", { required: translate("form.required") })}
+          {...register("message", { required: requiredMessage })}
           aria-invalid={Boolean(errors.message)}
           aria-describedby={errors.message ? "message-error" : undefined}
           className={`w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-brand-foreground placeholder:text-brand-muted ${focusOutline}`}
@@ -268,21 +342,54 @@ export default function ContactForm({ messages }: ContactFormProps) {
           </span>
         )}
       </label>
-      <input type="text" tabIndex={-1} autoComplete="off" className="hidden" {...register("company")} />
-      {errorMessage && status === "error" && (
-        <p className="text-sm text-accent-danger" role="alert">
-          {errorMessage}
-        </p>
-      )}
+      <input
+        type="text"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="hidden"
+        style={{ display: "none" }}
+        {...register("website")}
+        autoComplete="off"
+      />
+      <input type="hidden" {...register("ts")} />
+      <input type="hidden" {...register("turnstileToken")} />
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <TurnstileWidget
+          key={captchaRefresh}
+          siteKey={siteKey}
+          onVerify={handleTurnstileVerify}
+          onExpire={handleTurnstileExpire}
+          onError={handleTurnstileError}
+          className="min-h-[70px]"
+        />
+      </div>
       <button
         type="submit"
         className={`inline-flex items-center justify-center rounded-full bg-accent-primary px-6 py-3 text-sm font-semibold text-brand-base shadow-glow transition hover:scale-[1.01] disabled:opacity-60 ${focusOutline}`}
-        disabled={isSubmitting || status === "sending"}
+        disabled={isSending || !turnstileToken}
+        aria-busy={isSending}
       >
+        {isSending && (
+          <svg
+            className="mr-2 h-4 w-4 animate-spin text-brand-base"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+        )}
         {buttonLabel}
       </button>
+      {(errors.turnstileToken || errors.root) && (
+        <p className="text-sm text-accent-danger" role="alert" aria-live="polite">
+          {errors.turnstileToken?.message ?? errors.root?.message}
+        </p>
+      )}
       {status === "success" && (
-        <p className="text-sm text-accent-success" role="status">
+        <p className="text-sm text-accent-success" role="status" aria-live="polite">
           {translate("form.success")}
         </p>
       )}
