@@ -17,11 +17,12 @@ declare global {
         container: HTMLElement,
         options: {
           sitekey: string;
-          appearance?: "always" | "execute" | "interaction-only";
+          appearance?: "always" | "execute" | "interaction-only" | "managed";
           retry?: "off" | "auto";
           callback: (token: string) => void;
           "expired-callback"?: () => void;
           "error-callback"?: (errorCode?: string) => void;
+          "unsupported-callback"?: () => void;
         }
       ) => string;
       reset: (id?: string) => void;
@@ -41,25 +42,28 @@ export default function TurnstileBox({
 }: TurnstileBoxProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const hasRenderedRef = useRef(false);
 
   useEffect(() => {
     if (!siteKey) {
-      console.warn("[Turnstile] Missing siteKey");
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[Turnstile] Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY");
+      }
       return;
     }
 
-    let isActive = true;
+    let isMounted = true;
 
-    const renderWidget = () => {
-      if (!isActive) return;
-      if (widgetIdRef.current) return;
+    const renderWidgetOnce = () => {
+      if (!isMounted || hasRenderedRef.current) return;
       if (!containerRef.current || typeof window === "undefined" || !window.turnstile) {
         return;
       }
 
+      hasRenderedRef.current = true;
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: siteKey,
-        appearance: "interaction-only",
+        appearance: "always",
         retry: "auto",
         callback: (token) => {
           onVerify(token);
@@ -69,36 +73,52 @@ export default function TurnstileBox({
           if (widgetIdRef.current && window.turnstile) {
             try {
               window.turnstile.reset(widgetIdRef.current);
-            } catch (error) {
-              // ignore reset failures
+            } catch {
+              // ignore reset issues
             }
           }
         },
         "error-callback": (errorCode) => {
           onError?.(errorCode);
-          console.warn("[Turnstile error]", errorCode);
+          if (widgetIdRef.current && window.turnstile) {
+            try {
+              window.turnstile.reset(widgetIdRef.current);
+            } catch {
+              // ignore reset issues
+            }
+          }
+        },
+        "unsupported-callback": () => {
+          onError?.("unsupported");
+          if (widgetIdRef.current && window.turnstile) {
+            try {
+              window.turnstile.reset(widgetIdRef.current);
+            } catch {
+              // ignore reset issues
+            }
+          }
         },
       });
     };
 
-    renderWidget();
+    renderWidgetOnce();
 
-    const handleLoaded = () => renderWidget();
-    window.addEventListener(TURNSTILE_EVENT, handleLoaded);
+    window.addEventListener(TURNSTILE_EVENT, renderWidgetOnce);
 
     return () => {
-      isActive = false;
-      window.removeEventListener(TURNSTILE_EVENT, handleLoaded);
+      isMounted = false;
+      window.removeEventListener(TURNSTILE_EVENT, renderWidgetOnce);
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
-        } catch (error) {
-          // ignore remove failures
+        } catch {
+          // ignore remove issues
         }
-        widgetIdRef.current = null;
       }
+      widgetIdRef.current = null;
+      hasRenderedRef.current = false;
     };
   }, [siteKey, onVerify, onExpire, onError]);
 
-  return <div ref={containerRef} className={className} />;
+  return <div id="cf-turnstile" ref={containerRef} className={className} />;
 }
