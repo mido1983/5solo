@@ -585,5 +585,20 @@
         }
       ]
     }
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "phonePlaceholder": "+972 12 34 567 89",
+    "message": "Project details",
+    "submit": "Send request",
+    "sending": "Sending...",
+    "success": "Thank you! We'll get back within one business day.",
+    "error": "We couldn't send your message. Please try again.",
+    "required": "Fill in all required fields.",
+    "phoneInvalid": "Enter the phone number in the format +972 12 34 567 89.",
+    "tryAgain": "Something went wrong. Please try again.",
+    "requiredHint": "Fields marked * are required."
   }
 }
