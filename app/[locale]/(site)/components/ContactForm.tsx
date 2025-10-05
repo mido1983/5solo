@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import TurnstileBox from "@/components/anti-spam/TurnstileBox";
@@ -8,7 +8,8 @@ import PhoneInlineField, { type PhoneValue } from "@/components/phone/phone-inli
 import { digitsOnly, stripOneLeadingZero, toE164 } from "@/components/phone/utils";
 import { t, type Messages } from "@/lib/i18n";
 
-const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const rawSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+const siteKey = typeof rawSiteKey === "string" ? rawSiteKey.trim() : "";
 
 type ContactFormValues = {
   name: string;
@@ -78,15 +79,23 @@ export default function ContactForm({ messages }: ContactFormProps) {
     return value && value.length > 0 ? value : fallback;
   };
 
-  const captchaRequiredMessage = withFallback("form.captchaRequired", "Подтвердите, что вы не бот");
-  const tooFastMessage = withFallback("form.tooFast", "Слишком быстрое отправление");
-  const suspiciousMessage = withFallback("form.suspicious", "Подозрительная активность");
-  const phoneInvalidMessage = withFallback("form.phoneInvalid", "Неверный номер телефона");
-  const requiredMessage = withFallback("form.required", "Обязательное поле");
-  const tryAgainMessage = withFallback("form.tryAgain", "Попробуйте снова позже");
+  const captchaRequiredMessage = withFallback("form.captchaRequired", "Please confirm you are not a bot");
+  const captchaUnavailableMessage = withFallback("form.captchaUnavailable", "Captcha is temporarily unavailable");
+  const tooFastMessage = withFallback("form.tooFast", "Submission was too fast");
+  const suspiciousMessage = withFallback("form.suspicious", "Suspicious activity detected");
+  const phoneInvalidMessage = withFallback("form.phoneInvalid", "Invalid phone number");
+  const requiredMessage = withFallback("form.required", "This field is required");
+  const tryAgainMessage = withFallback("form.tryAgain", "Please try again later");
 
+  const hasSiteKey = siteKey.length > 0;
   const turnstileToken = watch("turnstileToken");
   const isSending = isSubmitting || status === "sending";
+
+  useEffect(() => {
+    if (!hasSiteKey) {
+      setFormError(captchaUnavailableMessage);
+    }
+  }, [hasSiteKey, captchaUnavailableMessage]);
 
   const handleTurnstileVerify = (token: string) => {
     setValue("turnstileToken", token, { shouldValidate: true });
@@ -105,6 +114,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
   };
 
   const onSubmit = async (values: ContactFormValues) => {
+    if (!hasSiteKey) {
+      setFormError(captchaUnavailableMessage);
+      setStatus("error");
+      return;
+    }
+
     if (!values.turnstileToken) {
       setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
       setStatus("error");
@@ -356,19 +371,25 @@ export default function ContactForm({ messages }: ContactFormProps) {
       <input type="hidden" {...register("ts")} />
       <input type="hidden" {...register("turnstileToken")} />
       <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        <TurnstileBox
-          key={captchaRefresh}
-          siteKey={siteKey}
-          onVerify={handleTurnstileVerify}
-          onExpire={handleTurnstileExpire}
-          onError={handleTurnstileError}
-          className="min-h-[70px]"
-        />
+        {hasSiteKey ? (
+          <TurnstileBox
+            key={captchaRefresh}
+            siteKey={siteKey}
+            onVerify={handleTurnstileVerify}
+            onExpire={handleTurnstileExpire}
+            onError={handleTurnstileError}
+            className="min-h-[78px] w-full"
+          />
+        ) : (
+          <p className="text-sm text-brand-muted" role="status" aria-live="polite">
+            {captchaUnavailableMessage}
+          </p>
+        )}
       </div>
       <button
         type="submit"
         className={`inline-flex items-center justify-center rounded-full bg-accent-primary px-6 py-3 text-sm font-semibold text-brand-base shadow-glow transition hover:scale-[1.01] disabled:opacity-60 ${focusOutline}`}
-        disabled={isSending || !turnstileToken}
+        disabled={isSending || !turnstileToken || !hasSiteKey}
         aria-busy={isSending}
       >
         {isSending && (

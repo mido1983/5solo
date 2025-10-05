@@ -32,6 +32,7 @@ declare global {
 }
 
 const TURNSTILE_EVENT = "turnstile-loaded";
+const POLL_INTERVAL_MS = 400;
 
 export default function TurnstileBox({
   siteKey,
@@ -42,7 +43,6 @@ export default function TurnstileBox({
 }: TurnstileBoxProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<string | null>(null);
-  const hasRenderedRef = useRef(false);
 
   useEffect(() => {
     if (!siteKey) {
@@ -55,12 +55,11 @@ export default function TurnstileBox({
     let isMounted = true;
 
     const renderWidgetOnce = () => {
-      if (!isMounted || hasRenderedRef.current) return;
+      if (!isMounted || widgetIdRef.current) return;
       if (!containerRef.current || typeof window === "undefined" || !window.turnstile) {
         return;
       }
 
-      hasRenderedRef.current = true;
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: siteKey,
         appearance: "always",
@@ -103,11 +102,15 @@ export default function TurnstileBox({
 
     renderWidgetOnce();
 
-    window.addEventListener(TURNSTILE_EVENT, renderWidgetOnce);
+    const handleLoaded = () => renderWidgetOnce();
+    window.addEventListener(TURNSTILE_EVENT, handleLoaded);
+
+    const pollId = window.setInterval(renderWidgetOnce, POLL_INTERVAL_MS);
 
     return () => {
       isMounted = false;
-      window.removeEventListener(TURNSTILE_EVENT, renderWidgetOnce);
+      window.removeEventListener(TURNSTILE_EVENT, handleLoaded);
+      window.clearInterval(pollId);
       if (widgetIdRef.current && window.turnstile) {
         try {
           window.turnstile.remove(widgetIdRef.current);
@@ -116,7 +119,6 @@ export default function TurnstileBox({
         }
       }
       widgetIdRef.current = null;
-      hasRenderedRef.current = false;
     };
   }, [siteKey, onVerify, onExpire, onError]);
 
