@@ -76,18 +76,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "config_missing" }, { status: 500 });
     }
 
+    const subject = "5SOLO - New contact request";
     const html = `
-      <h2>????? ?????? ? ????? 5SOLO</h2>
-      <p><strong>???:</strong> ${escapeHtml(name)}</p>
+      <h2>New contact request on 5SOLO</h2>
+      <p><strong>Name:</strong> ${escapeHtml(name)}</p>
       <p><strong>Email:</strong> ${escapeHtml(email)}</p>
-      <p><strong>???????:</strong> ${escapeHtml(expectedE164)}</p>
-      <p><strong>?????????:</strong><br/>${escapeHtml(message).replace(/\\n/g, "<br/>")}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(expectedE164)}</p>
+      <p><strong>Message:</strong><br/>${escapeHtml(message).replace(/\\n/g, "<br/>")}</p>
     `;
 
     await resend.emails.send({
       from: FROM,
       to: [TO],
-      subject: "5SOLO - ????? ??????",
+      subject,
       html,
       reply_to: email || undefined,
     });
