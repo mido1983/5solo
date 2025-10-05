@@ -10,6 +10,7 @@ import { t, type Messages } from "@/lib/i18n";
 
 const rawSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 const siteKey = typeof rawSiteKey === "string" ? rawSiteKey.trim() : "";
+const TURNSTILE_ENABLED = false;
 
 type ContactFormValues = {
   name: string;
@@ -87,49 +88,48 @@ export default function ContactForm({ messages }: ContactFormProps) {
   const requiredMessage = withFallback("form.required", "This field is required");
   const tryAgainMessage = withFallback("form.tryAgain", "Please try again later");
 
-  const hasSiteKey = siteKey.length > 0;
+  const turnstileActive = TURNSTILE_ENABLED && siteKey.length > 0;
   const turnstileToken = watch("turnstileToken");
   const isSending = isSubmitting || status === "sending";
 
   useEffect(() => {
-    if (!hasSiteKey) {
-      setFormError(captchaUnavailableMessage);
+    if (!turnstileActive) {
+      setFormError("");
     }
-  }, [hasSiteKey, captchaUnavailableMessage]);
+  }, [turnstileActive]);
 
   useEffect(() => {
-    // Debug logging to verify Turnstile key is available in the browser.
-    // Remove this once you confirm the value.
-    console.log("Turnstile site key:", siteKey || "<empty>");
-  }, []);
+    if (turnstileActive) {
+      console.log("Turnstile site key:", siteKey || "<empty>");
+    }
+  }, [turnstileActive]);
 
   const handleTurnstileVerify = (token: string) => {
+    if (!turnstileActive) return;
     setValue("turnstileToken", token, { shouldValidate: true });
     clearErrors("turnstileToken");
     setFormError("");
   };
 
   const handleTurnstileExpire = () => {
+    if (!turnstileActive) return;
     setValue("turnstileToken", "", { shouldValidate: true });
     setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
   };
 
   const handleTurnstileError = () => {
+    if (!turnstileActive) return;
     setValue("turnstileToken", "", { shouldValidate: true });
     setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
   };
 
   const onSubmit = async (values: ContactFormValues) => {
-    if (!hasSiteKey) {
-      setFormError(captchaUnavailableMessage);
-      setStatus("error");
-      return;
-    }
-
-    if (!values.turnstileToken) {
-      setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
-      setStatus("error");
-      return;
+    if (turnstileActive) {
+      if (!values.turnstileToken) {
+        setError("turnstileToken", { type: "manual", message: captchaRequiredMessage });
+        setStatus("error");
+        return;
+      }
     }
 
     setStatus("sending");
@@ -157,7 +157,7 @@ export default function ContactForm({ messages }: ContactFormProps) {
       phone_national: phoneSanitized.national,
       website: values.website,
       ts: values.ts,
-      turnstileToken: values.turnstileToken,
+      turnstileToken: turnstileActive ? values.turnstileToken : "",
     };
 
     try {
@@ -181,9 +181,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
             setFormError(tooFastMessage);
             break;
           case "captcha_failed":
-            setError("turnstileToken", { type: "server", message: captchaRequiredMessage });
-            setValue("turnstileToken", "", { shouldValidate: true });
-            setCaptchaRefresh((key) => key + 1);
+            if (turnstileActive) {
+              setError("turnstileToken", { type: "server", message: captchaRequiredMessage });
+              setValue("turnstileToken", "", { shouldValidate: true });
+              setCaptchaRefresh((key) => key + 1);
+            }
+            setFormError(tryAgainMessage);
             break;
           case "missing_fields":
             setFormError(requiredMessage);
@@ -376,8 +379,8 @@ export default function ContactForm({ messages }: ContactFormProps) {
       />
       <input type="hidden" {...register("ts")} />
       <input type="hidden" {...register("turnstileToken")} />
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-        {hasSiteKey ? (
+      {turnstileActive && (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <TurnstileBox
             key={captchaRefresh}
             siteKey={siteKey}
@@ -386,16 +389,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
             onError={handleTurnstileError}
             className="min-h-[78px] w-full"
           />
-        ) : (
-          <p className="text-sm text-brand-muted" role="status" aria-live="polite">
-            {captchaUnavailableMessage}
-          </p>
-        )}
-      </div>
+        </div>
+      )}
       <button
         type="submit"
         className={`inline-flex items-center justify-center rounded-full bg-accent-primary px-6 py-3 text-sm font-semibold text-brand-base shadow-glow transition hover:scale-[1.01] disabled:opacity-60 ${focusOutline}`}
-        disabled={isSending || !turnstileToken || !hasSiteKey}
+        disabled={isSending || (turnstileActive && !turnstileToken)}
         aria-busy={isSending}
       >
         {isSending && (

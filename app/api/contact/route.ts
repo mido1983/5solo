@@ -12,6 +12,7 @@ const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 const MIN_SUBMIT_DELAY_MS = 3000;
 const isDev = process.env.NODE_ENV !== "production";
+const TURNSTILE_ENABLED = false;
 
 export async function POST(request: Request) {
   try {
@@ -28,19 +29,22 @@ export async function POST(request: Request) {
     }
 
     const turnstileToken = typeof body?.turnstileToken === "string" ? body.turnstileToken.trim() : "";
-    if (!turnstileToken) {
-      return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
-    }
 
-    const ipHeader =
-      request.headers.get("cf-connecting-ip") ??
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      request.headers.get("x-real-ip") ??
-      undefined;
+    if (TURNSTILE_ENABLED) {
+      if (!turnstileToken) {
+        return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
+      }
 
-    const captcha = await verifyTurnstile(turnstileToken, ipHeader);
-    if (!captcha.success) {
-      return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
+      const ipHeader =
+        request.headers.get("cf-connecting-ip") ??
+        request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+        request.headers.get("x-real-ip") ??
+        undefined;
+
+      const captcha = await verifyTurnstile(turnstileToken, ipHeader);
+      if (!captcha.success) {
+        return NextResponse.json({ error: "captcha_failed" }, { status: 400 });
+      }
     }
 
     const name = String(body?.name ?? "").trim();
