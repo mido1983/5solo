@@ -97,6 +97,12 @@ export default function ContactForm({ messages }: ContactFormProps) {
     }
   }, [hasSiteKey, captchaUnavailableMessage]);
 
+  useEffect(() => {
+    // Debug logging to verify Turnstile key is available in the browser.
+    // Remove this once you confirm the value.
+    console.log("Turnstile site key:", siteKey || "<empty>");
+  }, []);
+
   const handleTurnstileVerify = (token: string) => {
     setValue("turnstileToken", token, { shouldValidate: true });
     clearErrors("turnstileToken");
