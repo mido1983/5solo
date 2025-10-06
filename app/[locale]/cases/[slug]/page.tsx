@@ -1,19 +1,17 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { isLocale, locales, type Locale } from "@/i18n/locales";
 import { getCaseDetail, getCasesContent } from "@/lib/content";
-import { getMessages, t } from "@/lib/i18n";
 import { absoluteUrl, canonicalUrl, languageAlternates, localePath } from "@/lib/utils";
 
 export async function generateStaticParams() {
   const params: Array<{ locale: string; slug: string }> = [];
 
   for (const locale of locales) {
-    const messages = await getMessages(locale);
-    const casesContent = getCasesContent(messages);
+    const casesContent = getCasesContent(locale as Locale);
     casesContent.items.forEach((item) => {
       params.push({ locale, slug: item.slug });
     });
@@ -32,8 +30,7 @@ export async function generateMetadata({
     notFound();
   }
 
-  const messages = await getMessages(localeParam);
-  const detail = getCaseDetail(messages, slug);
+  const detail = getCaseDetail(localeParam as Locale, slug);
   if (!detail) {
     notFound();
   }
@@ -81,8 +78,9 @@ export default async function CaseDetailPage({
     notFound();
   }
 
-  const messages = await getMessages(locale as Locale);
-  const detail = getCaseDetail(messages, slug);
+  const casesContent = getCasesContent(locale as Locale);
+
+  const detail = getCaseDetail(locale as Locale, slug);
 
   if (!detail) {
     notFound();
@@ -159,7 +157,7 @@ export default async function CaseDetailPage({
             href={localePath(locale, "cases")}
             className="text-sm font-semibold text-brand-muted transition hover:text-accent-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
           >
-            ← {t(messages, "cases.backLink", "Back to launches")}
+            {casesContent.backLink}
           </Link>
         </section>
       </div>

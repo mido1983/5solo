@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -23,7 +23,7 @@ export async function generateMetadata({
   }
 
   const messages = await getMessages(localeParam);
-  const casesContent = getCasesContent(messages);
+  const casesContent = getCasesContent(localeParam as Locale);
   const title = casesContent.title || t(messages, "cases.title");
   const description = casesContent.subtitle || t(messages, "cases.subtitle");
 
@@ -65,7 +65,7 @@ export default async function CasesPage({ params }: { params: { locale: string }
   }
 
   const messages = await getMessages(locale as Locale);
-  const casesContent = getCasesContent(messages);
+  const casesContent = getCasesContent(locale as Locale);
 
   return (
     <section className="bg-brand-base py-20">

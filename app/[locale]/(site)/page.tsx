@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import type { Locale } from "@/i18n/locales";
 import { isLocale } from "@/i18n/locales";
@@ -22,7 +22,7 @@ export default async function SitePage({ params }: { params: { locale: string } 
   }
 
   const messages = await getMessages(locale as Locale);
-  const casesContent = getCasesContent(messages);
+  const casesContent = getCasesContent(locale as Locale);
   const offer = getOfferContent(messages);
   const cases = casesContent.items.slice(0, 3);
 

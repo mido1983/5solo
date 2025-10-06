@@ -1,8 +1,7 @@
-﻿import type { MetadataRoute } from "next";
+import type { MetadataRoute } from "next";
 
-import { locales } from "@/i18n/locales";
+import { locales, type Locale } from "@/i18n/locales";
 import { getCasesContent } from "@/lib/content";
-import { getMessages } from "@/lib/i18n";
 import { absoluteUrl, localePath } from "@/lib/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -38,8 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     });
 
-    const messages = await getMessages(locale);
-    const cases = getCasesContent(messages);
+    const cases = getCasesContent(locale as Locale);
 
     for (const item of cases.items) {
       routes.push({
@@ -53,3 +51,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return routes;
 }
+
+

@@ -1,4 +1,6 @@
-﻿import type { Messages } from "@/lib/i18n";
+import type { Messages } from "@/lib/i18n";
+import type { Locale } from "@/i18n/locales";
+import { CASES_DATA, type CaseData } from "@/lib/cases-data";
 
 const toRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
@@ -178,102 +180,80 @@ export type CasesContent = {
   subtitle: string;
   detailLink: string;
   cta: string;
+  backLink: string;
   items: CaseSummary[];
 };
 
-const mapCaseDetail = (
-  item: Record<string, unknown>,
-  casesRoot: Record<string, unknown>,
-): CaseDetail | null => {
-  const slug = toString(item.slug);
-  const name = toString(item.name);
-  if (!slug || !name) {
+const mapCaseSummary = (item: CaseData): CaseSummary | null => {
+  const { slug, name, summary, result, thumbnail } = item;
+  if (!slug || !name || !thumbnail) {
     return null;
   }
 
-  const detail = toRecord(item.detail);
-  const metricPairs = mapStringPairs(detail.metrics, ["label", "value"]) as Array<{ label: string; value: string }>;
+  return {
+    slug,
+    name,
+    summary,
+    result,
+    thumbnail,
+  };
+};
+
+const mapCaseDetail = (item: CaseData, fallbackCta: string): CaseDetail => {
+  const { slug, name, detail, stack } = item;
   const hero = {
-    title: toString(detail.heroTitle, name),
-    subtitle: toString(detail.heroSubtitle),
-    metrics: metricPairs.map((entry) => ({ label: entry.label, value: entry.value })),
+    title: detail.heroTitle || name,
+    subtitle: detail.heroSubtitle || "",
+    metrics: detail.metrics.map((metric) => ({ label: metric.label, value: metric.value })),
   };
 
-  const gallery = toArray(detail.gallery)
-    .map((entry) => {
-      const src = toString(entry.src);
-      if (!src) {
-        return null;
-      }
-      return {
-        src,
-        alt: toString(entry.alt),
-      };
-    })
-    .filter((entry): entry is CaseGalleryItem => entry !== null);
+  const gallery = detail.gallery.map((image) => ({
+    src: image.src,
+    alt: image.alt || name,
+  }));
 
-  const stack = toStringArray(detail.stack);
-
-  const sections = toArray(detail.sections)
-    .map((section) => {
-      const title = toString(section.title);
-      const body = toStringArray(section.body);
-      if (!title || body.length === 0) {
-        return null;
-      }
-      return { title, body };
-    })
-    .filter((section): section is CaseSection => section !== null);
+  const sections = detail.sections.map((section) => ({
+    title: section.title,
+    body: section.body,
+  }));
 
   return {
     slug,
     name,
     hero,
     gallery,
-    stack,
+    stack: detail.stack.length > 0 ? detail.stack : stack,
     sections,
-    cta: toString(detail.cta, toString(casesRoot.cta)),
+    cta: detail.cta || fallbackCta,
   };
 };
 
-export const getCasesContent = (messages: Messages): CasesContent => {
-  const root = toRecord((messages as Record<string, unknown>).cases);
-  const items = toArray(root.items)
-    .map((item) => {
-      const slug = toString(item.slug);
-      const name = toString(item.name);
-      const summary = toString(item.summary);
-      const result = toString(item.result);
-      const thumbnail = toString(item.thumbnail);
-      if (!slug || !name || !thumbnail) {
-        return null;
-      }
-      return { slug, name, summary, result, thumbnail };
-    })
+export const getCasesContent = (locale: Locale): CasesContent => {
+  const dataset = CASES_DATA[locale];
+  const items = dataset.cases.items
+    .map((item) => mapCaseSummary(item))
     .filter((item): item is CaseSummary => item !== null);
 
   return {
-    label: toString(root.label),
-    title: toString(root.title),
-    subtitle: toString(root.subtitle),
-    detailLink: toString(root.detailLink),
-    cta: toString(root.cta),
+    label: dataset.cases.label,
+    title: dataset.cases.title,
+    subtitle: dataset.cases.subtitle,
+    detailLink: dataset.cases.detailLink,
+    cta: dataset.cases.cta,
+    backLink: dataset.cases.backLink,
     items,
   };
 };
 
-export const getCaseDetail = (messages: Messages, slug: string): CaseDetail | null => {
-  const root = toRecord((messages as Record<string, unknown>).cases);
-  const items = toArray(root.items);
-
-  for (const item of items) {
-    if (toString(item.slug) === slug) {
-      return mapCaseDetail(item, root);
-    }
+export const getCaseDetail = (locale: Locale, slug: string): CaseDetail | null => {
+  const dataset = CASES_DATA[locale];
+  const match = dataset.cases.items.find((item) => item.slug === slug);
+  if (!match) {
+    return null;
   }
-
-  return null;
+  return mapCaseDetail(match, dataset.cases.cta);
 };
+
 
 export type LegalSection = {
   title: string;
@@ -325,3 +305,5 @@ export const getHeroMetrics = (messages: Messages): { label: string; value: stri
   const pairs = mapStringPairs(hero.metrics, ["label", "value"]) as Array<{ label: string; value: string }>;
   return pairs.map((entry) => ({ label: entry.label, value: entry.value }));
 };
+
+
