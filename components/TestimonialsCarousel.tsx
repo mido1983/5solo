@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Testimonial = {
   id: string;
@@ -38,12 +38,20 @@ export default function TestimonialsCarousel({
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [slideHeight, setSlideHeight] = useState<number | null>(null);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
   const pointerStart = useRef<number | null>(null);
   const pointerDelta = useRef(0);
 
   const total = items.length;
+
+  const measureActiveSlide = useCallback(() => {
+    const node = slideRefs.current[activeIndex];
+    if (node) {
+      setSlideHeight(node.offsetHeight);
+    }
+  }, [activeIndex]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -78,7 +86,15 @@ export default function TestimonialsCarousel({
   useEffect(() => {
     const node = slideRefs.current[activeIndex];
     node?.focus({ preventScroll: true });
-  }, [activeIndex]);
+    measureActiveSlide();
+  }, [activeIndex, measureActiveSlide]);
+
+  useEffect(() => {
+    measureActiveSlide();
+    const handleResize = () => measureActiveSlide();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [measureActiveSlide]);
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     pointerStart.current = event.clientX;
@@ -127,7 +143,8 @@ export default function TestimonialsCarousel({
       }}
     >
       <div
-        className="overflow-hidden"
+        className="overflow-hidden transition-[height] duration-300"
+        style={{ height: slideHeight ?? "auto" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={releaseSwipe}
@@ -168,7 +185,9 @@ export default function TestimonialsCarousel({
                         {initials}
                       </div>
                     )}
-                    <p className="text-base leading-relaxed text-white/90">{testimonial.quote}</p>
+                    <p className="max-w-[640px] text-pretty text-base leading-relaxed text-white/90">
+                      {testimonial.quote}
+                    </p>
                   </div>
                   <footer className="mt-6 border-t border-white/10 pt-4 text-sm text-white/70">
                     <p className="font-semibold text-white">{testimonial.name}</p>
