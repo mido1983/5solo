@@ -31,26 +31,29 @@ function extractItems(block: TestimonialsBlock | undefined): Testimonial[] {
     return [];
   }
 
-  return rawItems
-    .map((item, index) => {
-      if (!item || typeof item !== "object") {
-        return null;
-      }
-      const record = item as Record<string, unknown>;
-      const quote = typeof record.quote === "string" ? record.quote.trim() : "";
-      const name = typeof record.name === "string" ? record.name.trim() : "";
-      if (!quote || !name) {
-        return null;
-      }
-      return {
-        id: typeof record.id === "string" ? record.id : `testimonial-${index + 1}`,
-        quote,
-        name,
-        role: typeof record.role === "string" ? record.role.trim() : undefined,
-        avatarUrl: typeof record.avatarUrl === "string" ? record.avatarUrl : undefined,
-      } satisfies Testimonial;
-    })
-    .filter((item): item is Testimonial => Boolean(item));
+  const items: Testimonial[] = [];
+
+  rawItems.forEach((item, index) => {
+    if (!item || typeof item !== "object") {
+      return;
+    }
+    const record = item as Record<string, unknown>;
+    const quote = typeof record.quote === "string" ? record.quote.trim() : "";
+    const name = typeof record.name === "string" ? record.name.trim() : "";
+    if (!quote || !name) {
+      return;
+    }
+
+    items.push({
+      id: typeof record.id === "string" ? record.id : `testimonial-${index + 1}`,
+      quote,
+      name,
+      role: typeof record.role === "string" ? record.role.trim() : undefined,
+      avatarUrl: typeof record.avatarUrl === "string" ? record.avatarUrl : undefined,
+    });
+  });
+
+  return items;
 }
 
 function extractControls(block: TestimonialsBlock | undefined): Controls {
