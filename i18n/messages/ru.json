@@ -20,15 +20,27 @@
     "primaryCta": "Запустить проект",
     "secondaryCta": "Посмотреть услуги",
     "metrics": [
-      { "label": "Срок запуска MVP", "value": "от 10-ти дней" },
-      { "label": "Средний чек", "value": "₪3–10K" },
-      { "label": "Поддержка", "value": "по подписке" },
-      { "label": "Фокус", "value": "результат" }
+      {
+        "label": "Срок запуска MVP",
+        "value": "от 10-ти дней"
+      },
+      {
+        "label": "Средний чек",
+        "value": "₪3–10K"
+      },
+      {
+        "label": "Поддержка",
+        "value": "по подписке"
+      },
+      {
+        "label": "Фокус",
+        "value": "результат"
+      }
     ]
   },
   "about": {
     "label": "О нас",
-    "title": "Пять направлений — один человек, который всё соберёт",
+    "title": "Пять экспертиз — единый продакшн",
     "text": "5SOLO — инженерный продакшн без дизайнерского пафоса. Мы делаем сайты, которые работают: быстрые, безопасные и оптимизированные под поиск. Код, контент, SEO, автоматизация и поддержка — внутри одного потока. Без бюрократии, без болтовни, без лишних демо."
   },
   "services": {
@@ -204,15 +216,35 @@
           "heroTitle": "GrowthOS вышел в прод за 12 дней",
           "heroSubtitle": "Онбординг стал управляемым сценарием с едиными метриками.",
           "metrics": [
-            { "label": "Доведение онбординга", "value": "+42%" },
-            { "label": "Подготовка к демо", "value": "-6 ч/нед" }
+            {
+              "label": "Доведение онбординга",
+              "value": "+42%"
+            },
+            {
+              "label": "Подготовка к демо",
+              "value": "-6 ч/нед"
+            }
           ],
           "gallery": [
-            { "src": "/images/cases/growthos-1.svg", "alt": "Интерфейс GrowthOS" },
-            { "src": "/images/cases/growthos-2.svg", "alt": "Поток онбординга GrowthOS" },
-            { "src": "/images/cases/growthos-3.svg", "alt": "Отчёт по выручке GrowthOS" }
+            {
+              "src": "/images/cases/growthos-1.svg",
+              "alt": "Интерфейс GrowthOS"
+            },
+            {
+              "src": "/images/cases/growthos-2.svg",
+              "alt": "Поток онбординга GrowthOS"
+            },
+            {
+              "src": "/images/cases/growthos-3.svg",
+              "alt": "Отчёт по выручке GrowthOS"
+            }
           ],
-          "stack": ["Next.js 14", "Supabase", "HubSpot", "Vercel"],
+          "stack": [
+            "Next.js 14",
+            "Supabase",
+            "HubSpot",
+            "Vercel"
+          ],
           "sections": [
             {
               "title": "Задача",
@@ -249,15 +281,35 @@
           "heroTitle": "Helix Labs закрыли раунд серии B с новым сайтом",
           "heroSubtitle": "Маркетинг, R&D и юристы работают в одной системе.",
           "metrics": [
-            { "label": "Запросы презентации", "value": "+58%" },
-            { "label": "Согласование материалов", "value": "-3 дня" }
+            {
+              "label": "Запросы презентации",
+              "value": "+58%"
+            },
+            {
+              "label": "Согласование материалов",
+              "value": "-3 дня"
+            }
           ],
           "gallery": [
-            { "src": "/images/cases/helix-labs-1.svg", "alt": "Сайт Helix Labs" },
-            { "src": "/images/cases/helix-labs-2.svg", "alt": "Визуализация данных Helix" },
-            { "src": "/images/cases/helix-labs-3.svg", "alt": "Раздел для инвесторов Helix" }
+            {
+              "src": "/images/cases/helix-labs-1.svg",
+              "alt": "Сайт Helix Labs"
+            },
+            {
+              "src": "/images/cases/helix-labs-2.svg",
+              "alt": "Визуализация данных Helix"
+            },
+            {
+              "src": "/images/cases/helix-labs-3.svg",
+              "alt": "Раздел для инвесторов Helix"
+            }
           ],
-          "stack": ["Next.js 14", "DatoCMS", "Vercel", "Marketo"],
+          "stack": [
+            "Next.js 14",
+            "DatoCMS",
+            "Vercel",
+            "Marketo"
+          ],
           "sections": [
             {
               "title": "Задача",
@@ -294,15 +346,35 @@
           "heroTitle": "Atlas Media масштабировал кампании без расширения штата",
           "heroSubtitle": "Компонентная система для запуска, тестов и обучения на данных.",
           "metrics": [
-            { "label": "Скорость запуска", "value": "6 вариантов/нед" },
-            { "label": "Стоимость лида", "value": "-27%" }
+            {
+              "label": "Скорость запуска",
+              "value": "6 вариантов/нед"
+            },
+            {
+              "label": "Стоимость лида",
+              "value": "-27%"
+            }
           ],
           "gallery": [
-            { "src": "/images/cases/atlas-media-1.svg", "alt": "Система лендингов Atlas" },
-            { "src": "/images/cases/atlas-media-2.svg", "alt": "Локализация контента Atlas" },
-            { "src": "/images/cases/atlas-media-3.svg", "alt": "Аналитика кампаний Atlas" }
+            {
+              "src": "/images/cases/atlas-media-1.svg",
+              "alt": "Система лендингов Atlas"
+            },
+            {
+              "src": "/images/cases/atlas-media-2.svg",
+              "alt": "Локализация контента Atlas"
+            },
+            {
+              "src": "/images/cases/atlas-media-3.svg",
+              "alt": "Аналитика кампаний Atlas"
+            }
           ],
-          "stack": ["Next.js 14", "Contentful", "Vercel", "Segment"],
+          "stack": [
+            "Next.js 14",
+            "Contentful",
+            "Vercel",
+            "Segment"
+          ],
           "sections": [
             {
               "title": "Задача",
@@ -343,7 +415,12 @@
         "url": "https://paparecipes.com/",
         "summary": "Кулинарный блог с рецептами и SEO-структурой на WordPress.",
         "result": "Рост органики по рецептурным запросам, удобное управление контентом.",
-        "stack": ["WordPress", "WP Recipe Maker", "Caching", "Schema"]
+        "stack": [
+          "WordPress",
+          "WP Recipe Maker",
+          "Caching",
+          "Schema"
+        ]
       },
       {
         "slug": "gastro-kitchen",
@@ -351,7 +428,12 @@
         "url": "https://gastro.kitchen/",
         "summary": "Площадка для мастер-классов и мероприятий.",
         "result": "Локальное SEO и лид-флоу через формы и мессенджеры.",
-        "stack": ["WordPress", "Forms", "Analytics", "Local SEO"]
+        "stack": [
+          "WordPress",
+          "Forms",
+          "Analytics",
+          "Local SEO"
+        ]
       },
       {
         "slug": "globalgrillguide",
@@ -359,7 +441,11 @@
         "url": "https://www.globalgrillguide.com/",
         "summary": "Аффилиатный проект по грилям и BBQ-оборудованию.",
         "result": "Структура категорий + контентный план под коммерческие запросы.",
-        "stack": ["WordPress", "Affiliate", "Content SEO"]
+        "stack": [
+          "WordPress",
+          "Affiliate",
+          "Content SEO"
+        ]
       },
       {
         "slug": "chef-art",
@@ -367,7 +453,11 @@
         "url": "http://chef-art.net/",
         "summary": "Персональный сайт шефа и портфолио работ.",
         "result": "Лёгкая админка и быстрые публикации без разработчика.",
-        "stack": ["WordPress", "Theme Tuning", "Forms"]
+        "stack": [
+          "WordPress",
+          "Theme Tuning",
+          "Forms"
+        ]
       },
       {
         "slug": "vered4u",
@@ -375,7 +465,12 @@
         "url": "https://vered4u.co.il/",
         "summary": "Сайт услуг с упором на локальные лиды.",
         "result": "Настроенные события аналитики и интеграции с CRM.",
-        "stack": ["WordPress", "Local SEO", "Analytics", "CRM"]
+        "stack": [
+          "WordPress",
+          "Local SEO",
+          "Analytics",
+          "CRM"
+        ]
       }
     ]
   },
@@ -383,22 +478,42 @@
     "label": "Отзывы",
     "title": "Что говорят клиенты",
     "subtitle": "Обещаем только то, что можем доставить — и доставляем.",
-    "items": {
-      "client1": {
-        "quote": "Через 2 недели после релиза пошли заказы с Google. Михаил всё собрал под ключ и показал, как управлять контентом.",
-        "name": "Анна К.",
-        "role": "Владелец кафе"
+    "items": [
+      {
+        "id": "t1",
+        "quote": "Открыли кофейню в Бат-Яме и времени не было совсем. Ребята за четыре дня собрали лендинг, подключили заказы через WhatsApp и сами подсказали, как вести акции. С тех пор утренние доставки забиты.",
+        "name": "Катя Миронова",
+        "role": "Совладелица кофейни, Бат-Ям"
       },
-      "client2": {
-        "quote": "Сайт на WordPress быстрый, SEO уже в топе по локальным запросам. Всё без дизайнерских страданий.",
-        "name": "Юрий М.",
-        "role": "Ремонт и сервис"
+      {
+        "id": "t2",
+        "quote": "После переезда сервиса в Хайфу надо было объяснить клиентам, что мы на новом месте. Сайт обновили, карту и цены поправили за вечер, рассылку отправили на следующий день. Люди находят нас без звонков.",
+        "name": "Дан Рубинштейн",
+        "role": "Сервис бытовой техники, Хайфа"
       },
-      "client3": {
-        "quote": "Подключили CRM и автоматизировали заявки — сайт реально работает. Чётко, без воды и сюрпризов.",
-        "name": "Лиор Т.",
-        "role": "Малый бизнес, Израиль"
+      {
+        "id": "t3",
+        "quote": "Мы семья фотографов из Ашдода: любим снимать, но не писать тексты. На интервью ребята вытянули из нас истории, оформили портфолио и блог. Теперь клиенты приходят уже готовые к съемке.",
+        "name": "Таль и Лина Коген",
+        "role": "Семейные фотографы, Ашдод"
+      },
+      {
+        "id": "t4",
+        "quote": "В туристическом мини-турагентстве сезон короче, чем хочется. Новый сайт загрузили за пять дней, добавили быстрые формы и календарь. Даже мама смогла оставить заявку без звонка, и это лучший тест.",
+        "name": "Наташа Брунер",
+        "role": "Частное турагентство, Тель-Авив"
+      },
+      {
+        "id": "t5",
+        "quote": "До знакомства с 5SOLO заявки падали в Excel, и мы теряли половину. Сейчас CRM подтягивает заказы прямо с сайта, менеджеры видят очередь в реальном времени, а клиенты получают ответ в тот же день.",
+        "name": "Михаил Левин",
+        "role": "Сеть прачечных, Центр Израиля"
       }
+    ],
+    "controls": {
+      "prev": "Назад",
+      "next": "Вперёд",
+      "goto": "Перейти к отзыву"
     }
   },
   "cta": {

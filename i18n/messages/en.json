@@ -405,22 +405,42 @@
     "label": "Testimonials",
     "title": "Teams that ship with 5SOLO",
     "subtitle": "Founders, marketing leaders and product owners rely on us when they need senior execution without adding headcount.",
-    "items": {
-      "client1": {
-        "quote": "We signed our first enterprise client two weeks after launch. Tracking, copy and the sales deck were ready on day one.",
-        "name": "Lena H.",
-        "role": "Founder, GrowthOS"
+    "items": [
+      {
+        "id": "t1",
+        "quote": "We launched a coffee bar in Bat Yam with zero spare hours. The team built a landing in four days, wired WhatsApp orders, and nudged us toward simple promos. Morning delivery slots have been full ever since.",
+        "name": "Katya Mironova",
+        "role": "Coffee co-owner, Bat Yam"
       },
-      "client2": {
-        "quote": "Design and development moved in lockstep. Every sprint delivered a usable increment to demo to investors.",
-        "name": "Ilya T.",
-        "role": "Head of Product, Helix Labs"
+      {
+        "id": "t2",
+        "quote": "When we moved the repair shop to Haifa, regulars kept calling the old address. They refreshed the site overnight, fixed the map and price list, and sent a mailing. Now people just walk in without confused calls.",
+        "name": "Dan Rubinstein",
+        "role": "Appliance service, Haifa"
       },
-      "client3": {
-        "quote": "They handled localisation, SEO migration and success enablement in one motion. Support KPIs climbed within the first month.",
-        "name": "Marina P.",
-        "role": "CX Director, Nimbus"
+      {
+        "id": "t3",
+        "quote": "We're a family photo studio in Ashdod; we love shooting, not writing copy. They interviewed us, shaped the stories, and laid out the portfolio. Clients arrive already knowing which session they want.",
+        "name": "Tal & Lina Cohen",
+        "role": "Family photographers, Ashdod"
+      },
+      {
+        "id": "t4",
+        "quote": "Our tiny travel desk has a short season. They shipped a new site in five days, added fast inquiry forms and a calendar. My aunt, who avoids tech, left a request without calling — that proved it works.",
+        "name": "Natasha Bruner",
+        "role": "Boutique travel agent, Tel Aviv"
+      },
+      {
+        "id": "t5",
+        "quote": "Before 5SOLO, inquiries landed in Excel and disappeared. Now the CRM pulls requests straight from the site, managers see the live queue, and customers get answers the same day.",
+        "name": "Mikhail Levin",
+        "role": "Laundry chain, Central Israel"
       }
+    ],
+    "controls": {
+      "prev": "Previous",
+      "next": "Next",
+      "goto": "Go to testimonial"
     }
   },
   "cta": {
