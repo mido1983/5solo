@@ -20,7 +20,7 @@
     "primaryCta": "Запустить проект",
     "secondaryCta": "Посмотреть услуги",
     "metrics": [
-      { "label": "Срок запуска", "value": "10 дней" },
+      { "label": "Срок запуска MVP", "value": "от 10-ти дней" },
       { "label": "Средний чек", "value": "₪3–10K" },
       { "label": "Поддержка", "value": "по подписке" },
       { "label": "Фокус", "value": "результат" }
@@ -176,7 +176,7 @@
   },
   "offer": {
     "label": "Оффер",
-    "title": "Готовый сайт за 10 дней",
+    "title": "Готовый сайт от 10 дней",
     "subtitle": "Фиксированный бюджет. Прозрачный процесс. Без сюрпризов.",
     "bullets": [
       "Базовый SEO и тексты включены",
@@ -335,7 +335,49 @@
     "label": "Хайлайты",
     "title": "Выборка недавних запусков",
     "subtitle": "Как мы соединяем стратегию, код и контент, чтобы быстро приносить результат.",
-    "cta": "Смотреть проект"
+    "cta": "Смотреть проект",
+    "items": [
+      {
+        "slug": "paparecipes",
+        "name": "PapaRecipes",
+        "url": "https://paparecipes.com/",
+        "summary": "Кулинарный блог с рецептами и SEO-структурой на WordPress.",
+        "result": "Рост органики по рецептурным запросам, удобное управление контентом.",
+        "stack": ["WordPress", "WP Recipe Maker", "Caching", "Schema"]
+      },
+      {
+        "slug": "gastro-kitchen",
+        "name": "Gastro Kitchen",
+        "url": "https://gastro.kitchen/",
+        "summary": "Площадка для мастер-классов и мероприятий.",
+        "result": "Локальное SEO и лид-флоу через формы и мессенджеры.",
+        "stack": ["WordPress", "Forms", "Analytics", "Local SEO"]
+      },
+      {
+        "slug": "globalgrillguide",
+        "name": "Global Grill Guide",
+        "url": "https://www.globalgrillguide.com/",
+        "summary": "Аффилиатный проект по грилям и BBQ-оборудованию.",
+        "result": "Структура категорий + контентный план под коммерческие запросы.",
+        "stack": ["WordPress", "Affiliate", "Content SEO"]
+      },
+      {
+        "slug": "chef-art",
+        "name": "Chef Art",
+        "url": "http://chef-art.net/",
+        "summary": "Персональный сайт шефа и портфолио работ.",
+        "result": "Лёгкая админка и быстрые публикации без разработчика.",
+        "stack": ["WordPress", "Theme Tuning", "Forms"]
+      },
+      {
+        "slug": "vered4u",
+        "name": "Vered4U",
+        "url": "https://vered4u.co.il/",
+        "summary": "Сайт услуг с упором на локальные лиды.",
+        "result": "Настроенные события аналитики и интеграции с CRM.",
+        "stack": ["WordPress", "Local SEO", "Analytics", "CRM"]
+      }
+    ]
   },
   "testimonials": {
     "label": "Отзывы",
